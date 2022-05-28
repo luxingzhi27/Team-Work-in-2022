@@ -24,7 +24,9 @@
 
 #include "AppDelegate.h"
 #include "HelloWorldScene.h"
-
+#include "originalHelloWorld.h"
+#include "MyButton.h"
+#include "GameScene.h"
 // #define USE_AUDIO_ENGINE 1
 
 #if USE_AUDIO_ENGINE
@@ -34,7 +36,7 @@ using namespace cocos2d::experimental;
 
 USING_NS_CC;
 
-static cocos2d::Size designResolutionSize = cocos2d::Size(480, 320);
+static cocos2d::Size designResolutionSize = cocos2d::Size(1048, 768);
 static cocos2d::Size smallResolutionSize = cocos2d::Size(480, 320);
 static cocos2d::Size mediumResolutionSize = cocos2d::Size(1024, 768);
 static cocos2d::Size largeResolutionSize = cocos2d::Size(2048, 1536);
@@ -73,9 +75,9 @@ bool AppDelegate::applicationDidFinishLaunching() {
     auto glview = director->getOpenGLView();
     if(!glview) {
 #if (CC_TARGET_PLATFORM == CC_PLATFORM_WIN32) || (CC_TARGET_PLATFORM == CC_PLATFORM_MAC) || (CC_TARGET_PLATFORM == CC_PLATFORM_LINUX)
-        glview = GLViewImpl::createWithRect("BrawlStars", cocos2d::Rect(0, 0, designResolutionSize.width, designResolutionSize.height));
+        glview = GLViewImpl::createWithRect("restart", cocos2d::Rect(0, 0, designResolutionSize.width, designResolutionSize.height));
 #else
-        glview = GLViewImpl::create("BrawlStars");
+        glview = GLViewImpl::create("restart");
 #endif
         director->setOpenGLView(glview);
     }
@@ -109,9 +111,11 @@ bool AppDelegate::applicationDidFinishLaunching() {
 
     // create a scene. it's an autorelease object
     auto scene = HelloWorld::createScene();
-
+    auto scene2 = originalHelloWorld::createScene();
+    //auto scene3 = MyButton::createscene();
+    auto scene4 = GameScene::createScene();
     // run
-    director->runWithScene(scene);
+    director->runWithScene(scene4);
 
     return true;
 }
