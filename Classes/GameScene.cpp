@@ -1,5 +1,5 @@
 #include "GameScene.h"
-#include "HelloWorldScene.h"
+#include "mymap.h"
 #include "AudioEngine.h"
 
 USING_NS_CC;
@@ -114,7 +114,7 @@ bool GameScene::init()
 void GameScene::menuItemCallback(cocos2d::Ref* pSender, std::string eventname)
 {
     if(eventname=="Begin")
-        Director::getInstance()->replaceScene(HelloWorld::createScene());
+        Director::getInstance()->replaceScene(MapLayer::createMapScene());
     if (eventname == "Music")
     {
         static int _play = 1;
