@@ -63,6 +63,10 @@ list(APPEND GAME_SOURCE
      Classes/SettingScene.cpp
      Classes/StartinterfaceScene.cpp
      Classes/StartScene.cpp
+     Classes/actor/hero.cpp
+     Classes/actor/people.cpp
+     Classes/actor/shirley.cpp
+     Classes/mymap.cpp
      )
 list(APPEND GAME_HEADER
      Classes/AppDelegate.h
@@ -72,6 +76,10 @@ list(APPEND GAME_HEADER
      Classes/SettingScene.h
      Classes/StartinterfaceScene.h
      Classes/StartScene.h
+     Classes/actor/hero.h
+     Classes/actor/people.h
+     Classes/actor/shirley.h
+     Classes/mymap.h
      )
 
 if(ANDROID)

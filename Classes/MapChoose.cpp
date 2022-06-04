@@ -1,5 +1,6 @@
 #include "MapChoose.h"
 #include "FastCreating.h"
+#include"mymap.h"
 bool MapChoose::init()
 {
 	if (!Scene::init())
@@ -106,6 +107,7 @@ bool MapChoose::init()
 			switch (type) {
 			case Widget::TouchEventType::ENDED:
 				Director::getInstance()->popScene();
+				Director::getInstance()->pushScene(MapLayer::createMapScene());
 				break;
 			default:
 				break;
