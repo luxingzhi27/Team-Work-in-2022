@@ -67,6 +67,7 @@ list(APPEND GAME_SOURCE
      Classes/actor/people.cpp
      Classes/actor/shirley.cpp
      Classes/mymap.cpp
+     Classes/MyBar.cpp
      )
 list(APPEND GAME_HEADER
      Classes/AppDelegate.h
@@ -80,6 +81,7 @@ list(APPEND GAME_HEADER
      Classes/actor/people.h
      Classes/actor/shirley.h
      Classes/mymap.h
+     Classes/MyBar.h
      )
 
 if(ANDROID)
