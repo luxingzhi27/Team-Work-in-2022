@@ -69,7 +69,7 @@ list(APPEND GAME_SOURCE
      Classes/mymap.cpp
      Classes/MyBar.cpp
      Classes/Article/Article.cpp
-     Classes/Bullet.cpp
+     Classes/Article/Bullet.cpp
      )
 list(APPEND GAME_HEADER
      Classes/AppDelegate.h
@@ -86,7 +86,7 @@ list(APPEND GAME_HEADER
      Classes/MyBar.h
      Classes/const/const.h
      Classes/Article/Article.h
-     Classes/Bullet.h
+     Classes/Article/Bullet.h
      )
 
 if(ANDROID)
