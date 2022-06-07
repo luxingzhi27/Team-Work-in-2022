@@ -1,4 +1,5 @@
 #include "mymap.h"
+
 USING_NS_CC;
 
 bool MapLayer::init()
@@ -23,9 +24,30 @@ bool MapLayer::init()
 
     m_hero->bindMap(m_map);         //绑定地图
 
+    auto treasure = Treasure::create("treasure.png");
+    treasure->setPosition(Vec2(300, 300));
+    this->addChild(treasure);
+
+    auto trea2 = Treasure::create("treasure.png");
+    trea2->setPosition(Vec2(900, 900));
+    this->addChild(trea2);
+
+    auto trea3 = Treasure::create("treasure.png");
+    trea3->setPosition(Vec2(700,600));
+    this->addChild(trea3);
 
 
+    auto dia = Diamond::create("diamond.png");
+    dia->setPosition(Vec2(400, 400));
+    dia->run_action();
+    this->addChild(dia);
 
+    //注册碰撞监听器
+    auto contactListener = EventListenerPhysicsContact::create();
+    contactListener->onContactBegin = CC_CALLBACK_1(MapLayer::onContactBegin, this);
+    _eventDispatcher->addEventListenerWithSceneGraphPriority(contactListener, this);
+
+ 
 
     return true;
 }
@@ -57,13 +79,102 @@ void MapLayer::update(float dlt)
 
 }
 
+bool MapLayer::onContactBegin(cocos2d::PhysicsContact& contact)
+{
+    auto nodeA = contact.getShapeA()->getBody()->getNode();
+    auto nodeB = contact.getShapeB()->getBody()->getNode();
+
+    if (nodeA && nodeB)
+    {
+        ///////////////////人物中弹
+        if (nodeA->getTag() == BULLET_TAG&& nodeB->getTag()==HERO_TAG)
+        {
+            isConEve=true;
+            ConEve = ContactEvents::HeroHurt;
+            auto bullet = dynamic_cast<Bullet*>(nodeA);
+            auto hero = dynamic_cast<Hero*>(nodeB);
+            ConEve_Hero_Bullet(hero,bullet);
+        }
+        else if (nodeB->getTag() == BULLET_TAG && nodeA->getTag() == HERO_TAG)
+        {
+            isConEve = true;
+            ConEve = ContactEvents::HeroHurt;
+            auto bullet = dynamic_cast<Bullet*>(nodeB);
+            auto hero = dynamic_cast<Hero*>(nodeA);
+            ConEve_Hero_Bullet(hero, bullet);
+        }
+
+
+        /////////////////////////////宝箱中弹
+        else if (nodeA->getTag() == BULLET_TAG&&nodeB->getTag()==TREASURE_TAG)
+        {
+            isConEve = true;
+            ConEve = ContactEvents::TreasureHurt;
+            auto bullet = dynamic_cast<Bullet*>(nodeA);
+            auto treasure = dynamic_cast<Treasure*>(nodeB);
+            ConEve_Treasure_Bullet(treasure, bullet);
+        }
+        else if (nodeB->getTag() == BULLET_TAG && nodeA->getTag() == TREASURE_TAG)
+        {
+            isConEve = true;
+            ConEve = ContactEvents::TreasureHurt;
+            auto bullet = dynamic_cast<Bullet*>(nodeB);
+            auto treasure = dynamic_cast<Treasure*>(nodeA);
+            ConEve_Treasure_Bullet(treasure, bullet);
+        }
+
+        ///////////////////////////////人获取宝石
+        else if(nodeA->getTag() == DIAMOND_TAG && nodeB->getTag() == HERO_TAG)
+        { 
+            isConEve = true;
+            ConEve = ContactEvents::getDiamond;
+            auto dia = dynamic_cast<Diamond*>(nodeA);
+            auto hero = dynamic_cast<Hero*>(nodeB);
+            ConEve_Hero_Diamond(hero,dia);
+        }
+        else if (nodeB->getTag() == DIAMOND_TAG && nodeA->getTag() == HERO_TAG)
+        {
+            isConEve = true;
+            ConEve = ContactEvents::getDiamond;
+            auto dia = dynamic_cast<Diamond*>(nodeB);
+            auto hero = dynamic_cast<Hero*>(nodeA);
+            ConEve_Hero_Diamond(hero, dia);
+        }
+    }
+
+    return true;
+  
+}
+
+void MapLayer::ConEve_Hero_Bullet(Hero* hero,Bullet* bullet)
+{
+    log("hero get hurt");
+    hero->getHurt(bullet->getATK());
+    bullet->onHit();
+    bullet->fillenergy();
+    
+}
+void MapLayer::ConEve_Treasure_Bullet(Treasure* treasure, Bullet* bullet)
+{
+    log("treasure get hurt");
+    treasure->getHurt(bullet->getATK());
+    bullet->onHit();
+
+}
+
+void MapLayer::ConEve_Hero_Diamond(Hero* hero, Diamond* dia)
+{
+    log("hero get diamond");
+    hero->getDiamond();
+    dia->removeFromParentAndCleanup(true);
+}
 
 
 
 Scene* MapLayer::createMapScene()
 {
     auto scene = Scene::createWithPhysics();
-    scene->getPhysicsWorld()->setDebugDrawMask(PhysicsWorld::DEBUGDRAW_ALL);
+   // scene->getPhysicsWorld()->setDebugDrawMask(PhysicsWorld::DEBUGDRAW_ALL);
     auto layer = MapLayer::create();
     scene->addChild(layer);
     return scene;

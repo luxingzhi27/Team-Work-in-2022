@@ -1,12 +1,6 @@
 #include "people.h"
 USING_NS_CC;
 
-#define MOVEDURATION 0.01
-#define DISTANCE 1
-#define UP Vec2(0,DISTANCE)
-#define DOWN Vec2(0,-DISTANCE)
-#define LEFT Vec2(-DISTANCE,0)
-#define RIGHT Vec2(DISTANCE,0)
 
 People::People()
 {
@@ -20,6 +14,8 @@ bool People::init()
 {
 	if (!Sprite::init())
 		return false;
+	//auto BloodBar = MyBar::createLayer("BloodBar.png", this);
+	//addChild(BloodBar);
 	return true;
 }
 
@@ -52,5 +48,21 @@ Animate* People::getAnimate(const char* status, const char* heroName, int cnt, i
 	auto _animate = Animate::create(_animation);
 	_animate->retain();         //避免生成的animate会被自动释放(找了好久bug)
 	return _animate;
+}
+
+bool People::isAlive() const
+{
+	return _isAlive;
+}
+
+void People::getHurt(int hurt)
+{
+	if (_HP > hurt)
+		_HP -= hurt;
+	else
+	{
+		_HP = 0;
+		_isAlive = false;
+	}
 }
 

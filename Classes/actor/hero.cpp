@@ -29,10 +29,16 @@ bool Hero::init()
 	KeyListener->onKeyReleased = [=](EventKeyboard::KeyCode keycode, Event* event) {
 		keys[keycode] = false;
 	};
+
 	// 使用EventDispatcher来处理各种各样的事件，如触摸和其他键盘事件。
+
 	this->getEventDispatcher()->addEventListenerWithSceneGraphPriority(KeyListener, this);
+	
 	return true;
 }
+
+
+
 
 Hero* Hero::create(const char* file)
 {
@@ -47,51 +53,56 @@ Hero* Hero::create(const char* file)
 	return nullptr;
 }
 
-void Hero::attack(Vec2 target)
-{	
-	if (projectileNum > 0)
-	{
-		Projectile = Sprite::create("projectile.png");
-		this->addChild(Projectile);
-		auto begin = this->getPosition();
-		auto route = target - begin;
-		route.normalize();
-		route *= 1000;
-		auto move = MoveTo::create(1.f, route);
-		Projectile->runAction(move);
 
-		//每一次攻击都会使子弹数量减少
-		projectileNum--;
-	}
-}
-
-void Hero::getHurt(Hero& enemy)
+//void Hero::attack(Vec2 target)
+//{	
+//	if (projectileNum > 0)
+//	{
+//		Projectile = Sprite::create("projectile.png");
+//		this->addChild(Projectile);
+//		auto begin = this->getPosition();
+//		auto route = target - begin;
+//		route.normalize();
+//		route *= 1000;
+//		auto move = MoveTo::create(1.f, route);
+//		Projectile->runAction(move);
+//
+//		//每一次攻击都会使子弹数量减少
+//		projectileNum--;
+//	}
+//}
+//
+//void Hero::getHurt(Hero& enemy)
+//{
+//	_HP -= enemy._ATK;
+//}
+//
+void Hero::fillBullet()
 {
-	_HP -= enemy._ATK;
-}
-
-void Hero::fillProjectile()
-{
-	static int cnt = 0;
+	static int cnt = 2;
 	cnt++;
-	log("cnt=%d", cnt);
-	if (projectileNum < 6&&cnt>120)  //实现延时换弹的效果
+	//log("in fillBullet");
+	if (cnt % 160 == 1 && bulletNum < MAX_BULLET_NUM)
 	{
-		projectileNum++;
-		cnt = 0;
+		log("fill Bullet");
+		bulletNum++;
 	}
-	if (cnt == 100000)
+	if (cnt == 1000000)
 		cnt = 0;
 }
-
 void Hero::fillEnergy()
 {
-	if (energy < 6)
-		energy++;
+	energy++;
 }
-
-void Hero::specialAttack(Vec2 target)
-{
+//
+//void Hero::fillEnergy()
+//{
+//	if (energy < 6)
+//		energy++;
+//}
+//
+//void Hero::specialAttack(Vec2 target)
+//{
 	//if (energy == MAX_ENERGY)
 	//{
 	//	Blast = Sprite::create("blast.png");
@@ -113,12 +124,31 @@ void Hero::specialAttack(Vec2 target)
 
 	//	energy = 0;        //能量清空 
 	//}
+//}
+
+
+//void Hero::levelUp()
+//{
+//	_ATK += LEVEL_UP_ATK;
+//	_HP += LEVEL_UP_HP;
+//}
+
+void Hero::bindBullet(const char* bulletType)
+{
+	BulletType = bulletType;
 }
 
-void Hero::levelUp()
+void Hero::getDiamond()
 {
-	_ATK += LEVEL_UP_ATK;
-	_HP += LEVEL_UP_HP;
+	diamondNum++;
+	_HP += AmplificationRate * InitHP;
+	_ATK += AmplificationRate * InitATK;
+	//一个闪动特效，说明他升级了
+	auto recov = TintTo::create(0.2f, this->getColor());
+	auto tintto = TintTo::create(0.2f, Color3B::WHITE);
+	auto seq = Sequence::create(tintto, recov, nullptr);
+	runAction(Sequence::create(seq, seq->clone(), seq->clone(), nullptr));
+	log("hero shine");
 }
 
 void Hero::update(float dlt)
@@ -153,6 +183,9 @@ void Hero::update(float dlt)
 	else
 		isIdle = true;
 	moveAnimation();
+
+	fillBullet();
+
 }
 
 bool Hero::isKeyPressed(cocos2d::EventKeyboard::KeyCode keyCode)
@@ -187,6 +220,8 @@ void Hero::keyPressedDuration(EventKeyboard::KeyCode keycode)
 	auto position = this->getPosition();
 	auto aimx = this->getContentSize().width / 2;
 	auto aimy = this->getContentSize().height / 2;
+
+
 	if (offsetx == 0)
 		aimx = 0;
 	if (offsetx < 0)
@@ -196,9 +231,8 @@ void Hero::keyPressedDuration(EventKeyboard::KeyCode keycode)
 	if (offsety < 0)
 		aimy = -aimy;
 	position = Vec2toTile(position + Vec2(aimx, aimy));
-	auto wallgrp = _map->getLayer("barrier");
+		auto wallgrp = _map->getLayer("barrier");
 	int tilegid = wallgrp->getTileGIDAt(position);
-
 	log("tilegid:%d", tilegid);
 
 	if (tilegid)
@@ -261,12 +295,23 @@ void Hero::moveAnimation()
 		runAction(now);
 		now->retain();
 	}
+
 	isFirst = false;
 }
 
 bool Hero::isStatusChanged()
 {
-	return !(lastisIdle==isIdle&&lastTowards==towards);
+	return !(lastisIdle == isIdle && lastTowards == towards);
 }
+
+int Hero::getDiamondNum()
+{
+	return diamondNum;
+}
+
+
+
+
+
 
 

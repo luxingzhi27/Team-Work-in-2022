@@ -3,6 +3,7 @@
 #define __SHIRLEY_H__
 
 #include"cocos2d.h"
+#include"const/const.h"
 #include"hero.h"
 
  class Shirley : public Hero 
@@ -15,11 +16,13 @@ public:
 
     static Shirley* create(const char* file);
 
-    //攻击方式
-    void attack(cocos2d::Vec2 target);
+    bool bindPhysicsBody();
 
-    //受到伤害
-    void getHurt(Hero& enemy);
+    //攻击方式
+    virtual void attack(Vec2 target);
+
+    bool onTouchBegan(Touch* touch, Event* unused_event);
+
 
     void specialAttack(cocos2d::Vec2 target);
 

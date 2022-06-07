@@ -2,16 +2,14 @@
 #ifndef __HERO_H__
 #define __HERO_H__
 
-#define LEVEL_UP_ATK 400
-#define LEVEL_UP_HP 2000
-#define MAX_PROJECTILE 6
-#define MAX_ENERGY 4
-
-enum class HeroTowards{front,back,right,left};
-
-
+#include"const/const.h"
 #include"map"
 #include"people.h"
+#include"Article/Bullet.h"
+#include<cmath>
+
+class Bullet;
+
 
 class Hero : public People
 {
@@ -23,23 +21,20 @@ public:
 
     static Hero* create(const char* file);
 
-    //攻击方式
-    virtual void attack(cocos2d::Vec2 target);
-
-    //受到伤害
-    virtual void getHurt(Hero& enemy);
-
     //填充子弹
-    void fillProjectile();
+    void fillBullet();
 
     //增加能量
     void fillEnergy();
 
-    //特殊技能
-    virtual void specialAttack(cocos2d::Vec2 target);
+    ////特殊技能
+    //virtual void specialAttack(cocos2d::Vec2 target);
 
-    //升级
-    void levelUp();
+
+    void bindBullet(const char* bulletType);
+
+    //升级(获得宝石)
+    void getDiamond();
 
     //update函数
     void update(float dlt);
@@ -60,15 +55,20 @@ public:
     void moveAnimation();
 
     bool isStatusChanged();
-    
+
+    int getDiamondNum();
+
+
     // implement the "static create()" method manually
     CREATE_FUNC(Hero);
 
+
+
 protected:
-    int projectileNum=MAX_PROJECTILE;    //用于存放子弹的数量
     int energy = 0;            //能量值
-    cocos2d::Sprite* Projectile;    //发射的子弹
-    cocos2d::Sprite* Blast;          //特殊技能
+    int Max_energy;
+    //cocos2d::Sprite* Projectile;    //发射的子弹
+    //cocos2d::Sprite* Blast;          //特殊技能
     cocos2d::TMXTiledMap* _map;
     cocos2d::Animate* m_front;          //向前走动画
     cocos2d::Animate* m_back;           //向后走动画
@@ -79,13 +79,15 @@ protected:
     cocos2d::Animate* m_idle_left;
     cocos2d::Animate* m_idle_right;
     cocos2d::Animate* now;
-
     HeroTowards towards;
     HeroTowards lastTowards;
     bool isIdle;
     bool lastisIdle;
-
-    
+    bool isTouched = false;
+    Bullet* _bullet;
+    int bulletNum = MAX_BULLET_NUM;    //用于存放子弹的数量
+    const char* BulletType;
+    int diamondNum = 1;                //当前持有宝石数
 
 public:
     std::map<cocos2d::EventKeyboard::KeyCode, bool>  keys;
