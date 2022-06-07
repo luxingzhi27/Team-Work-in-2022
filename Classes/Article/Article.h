@@ -8,7 +8,7 @@
 
 #include"cocos2d.h"
 #include"const/const.h"
-
+#include"Mybar.h"
 USING_NS_CC;
 
 
@@ -34,6 +34,7 @@ private:
 	int _HP=TreasureHP;
 	TMXTiledMap* _map;
 	bool _isDestroyed = false;
+	MyBar* bar;
 };
 
 /////////////////////////////////

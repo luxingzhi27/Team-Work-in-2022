@@ -1,4 +1,6 @@
 #include "mymap.h"
+#include<cstdlib>
+#include<ctime>
 
 USING_NS_CC;
 
@@ -20,22 +22,25 @@ bool MapLayer::init()
     m_hero = Shirley::create();
     m_hero->init();
     this->addChild(m_hero);
-    m_hero->setPosition(Vec2(150,150));
+    
+    auto bornGrp = m_map->getObjectGroup("bornpoint");       //获取英雄出生点对象层
+    auto bornPoints = bornGrp->getObjects();
+    srand((unsigned)time(0));
+    auto playerBorn = bornPoints[rand() % 10];
+    m_hero->setPosition(playerBorn.asValueMap().at("x").asFloat(), playerBorn.asValueMap().at("y").asFloat());
 
     m_hero->bindMap(m_map);         //绑定地图
 
-    auto treasure = Treasure::create("treasure.png");
-    treasure->setPosition(Vec2(300, 300));
-    this->addChild(treasure);
 
-    auto trea2 = Treasure::create("treasure.png");
-    trea2->setPosition(Vec2(900, 900));
-    this->addChild(trea2);
-
-    auto trea3 = Treasure::create("treasure.png");
-    trea3->setPosition(Vec2(700,600));
-    this->addChild(trea3);
-
+    //放置宝箱
+    auto treasureGrp = m_map->getObjectGroup("treasure");
+    auto treasurePoints = treasureGrp->getObjects();
+    for (auto i : treasurePoints)
+    {
+        auto treasure = Treasure::create("treasure.png");
+        this->addChild(treasure);
+        treasure->setPosition(i.asValueMap().at("x").asFloat(), i.asValueMap().at("y").asFloat());
+    }
 
     auto dia = Diamond::create("diamond.png");
     dia->setPosition(Vec2(400, 400));

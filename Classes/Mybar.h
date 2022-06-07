@@ -7,10 +7,9 @@ using namespace ui;
 class MyBar : public Layer
 {
 public:
-	static Layer* createLayer(std::string _BarPictureFileName, Sprite* _MySprite);
 	virtual bool init();
 	CREATE_FUNC(MyBar);
-	bool BarPercentUpdate(int damage);
+	bool BarPercentUpdate(int damage,double HP);
 	//you can set the original value from 1-10
 	void setOriValue(int originalvalue);
 	void SetBarPosition(int x, int y);

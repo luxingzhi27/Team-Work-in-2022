@@ -186,6 +186,8 @@ void Hero::update(float dlt)
 
 	fillBullet();
 
+	grassInvisible();
+
 }
 
 bool Hero::isKeyPressed(cocos2d::EventKeyboard::KeyCode keyCode)
@@ -231,7 +233,7 @@ void Hero::keyPressedDuration(EventKeyboard::KeyCode keycode)
 	if (offsety < 0)
 		aimy = -aimy;
 	position = Vec2toTile(position + Vec2(aimx, aimy));
-		auto wallgrp = _map->getLayer("barrier");
+	auto wallgrp = _map->getLayer("barrier");
 	int tilegid = wallgrp->getTileGIDAt(position);
 	log("tilegid:%d", tilegid);
 
@@ -307,6 +309,17 @@ bool Hero::isStatusChanged()
 int Hero::getDiamondNum()
 {
 	return diamondNum;
+}
+
+void Hero::grassInvisible()
+{
+	auto grassLayer = _map->getLayer("grass");
+	auto pos = Vec2toTile(getPosition());
+	int gid = grassLayer->getTileGIDAt(pos);
+	if (gid)
+		setOpacity(128);
+	else
+		setOpacity(255);
 }
 
 

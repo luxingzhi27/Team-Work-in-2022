@@ -58,6 +58,8 @@ public:
 
     int getDiamondNum();
 
+    //≤›¥‘÷–“˛…Ì
+    void grassInvisible();
 
     // implement the "static create()" method manually
     CREATE_FUNC(Hero);

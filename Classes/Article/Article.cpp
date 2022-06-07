@@ -1,5 +1,6 @@
 #include "Article.h"
 
+
 // Print useful error message instead of segfaulting when files are not there.
 static void problemLoading(const char* filename)
 {
@@ -32,6 +33,9 @@ bool Treasure::init()
 	this->_HP = TreasureHP;
 	this->setTag(TREASURE_TAG);
 	bindPhysicsBody();
+	bar = MyBar::create();
+	bar->init();
+	addChild(bar);
 	return true;
 }
 
@@ -48,6 +52,7 @@ void Treasure::getHurt(int hurt)
 		auto fadeout = FadeOut::create(0.05f);
 		auto fadein = FadeIn::create(0.05f);
 		this->runAction(Sequence::create(fadeout, fadein, nullptr));
+		bar->BarPercentUpdate(hurt, double(getHP()));
 	}
 	else
 	{
@@ -55,6 +60,7 @@ void Treasure::getHurt(int hurt)
 		_isDestroyed = true;
 		auto fadeout = FadeOut::create(0.1f);
 		auto fadein = FadeIn::create(0.1f);
+		bar->BarPercentUpdate(getHP(), double(getHP()));
 		this->runAction(Sequence::create(fadein, fadeout,fadein->clone(),fadeout->clone(), nullptr));
 		this->createDiamond();
 		this->removeFromParentAndCleanup(true);
