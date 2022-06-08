@@ -1,5 +1,10 @@
 #include "hero.h"
 USING_NS_CC;
+#include<vector>
+#include<cmath>
+#include<cstdlib>
+#include<ctime>
+using namespace std;
 
 Hero::Hero()
 {
@@ -22,17 +27,18 @@ bool Hero::init()
 	lastisIdle = isIdle;
 
 	this->scheduleUpdate();
-	auto KeyListener = EventListenerKeyboard::create();
-	KeyListener->onKeyPressed = [=](EventKeyboard::KeyCode keycode, Event* event) {
-		keys[keycode] = true;
-	};
-	KeyListener->onKeyReleased = [=](EventKeyboard::KeyCode keycode, Event* event) {
-		keys[keycode] = false;
-	};
-
-	// 使用EventDispatcher来处理各种各样的事件，如触摸和其他键盘事件。
-
-	this->getEventDispatcher()->addEventListenerWithSceneGraphPriority(KeyListener, this);
+	if (isai == false)           //如果不是ai才执行这一步
+	{
+		auto KeyListener = EventListenerKeyboard::create();
+		KeyListener->onKeyPressed = [=](EventKeyboard::KeyCode keycode, Event* event) {
+			keys[keycode] = true;
+		};
+		KeyListener->onKeyReleased = [=](EventKeyboard::KeyCode keycode, Event* event) {
+			keys[keycode] = false;
+		};
+		// 使用EventDispatcher来处理各种各样的事件，如触摸和其他键盘事件。
+		this->getEventDispatcher()->addEventListenerWithSceneGraphPriority(KeyListener, this);
+	}
 	
 	return true;
 }
@@ -154,40 +160,44 @@ void Hero::getDiamond()
 void Hero::update(float dlt)
 {
 	Node::update(dlt);
-	auto w = EventKeyboard::KeyCode::KEY_W, a = EventKeyboard::KeyCode::KEY_A;
-	auto s = EventKeyboard::KeyCode::KEY_S, d = EventKeyboard::KeyCode::KEY_D;
-	if (isKeyPressed(w) || isKeyPressed(s) || isKeyPressed(a) || isKeyPressed(d))
+	if (isai == false) 
 	{
-		isIdle = false;
-		if (isKeyPressed(w))
+		auto w = EventKeyboard::KeyCode::KEY_W, a = EventKeyboard::KeyCode::KEY_A;
+		auto s = EventKeyboard::KeyCode::KEY_S, d = EventKeyboard::KeyCode::KEY_D;
+		if (isKeyPressed(w) || isKeyPressed(s) || isKeyPressed(a) || isKeyPressed(d))
 		{
-			towards = HeroTowards::front;
-			keyPressedDuration(w);
+			isIdle = false;
+			if (isKeyPressed(w))
+			{
+				towards = HeroTowards::front;
+				keyPressedDuration(w);
+			}
+			else if (isKeyPressed(s))
+			{
+				towards = HeroTowards::back;
+				keyPressedDuration(s);
+			}
+			else if (isKeyPressed(a))
+			{
+				towards = HeroTowards::left;
+				keyPressedDuration(a);
+			}
+			else if (isKeyPressed(d))
+			{
+				towards = HeroTowards::right;
+				keyPressedDuration(d);
+			}
 		}
-		else if (isKeyPressed(s))
-		{
-			towards = HeroTowards::back;
-			keyPressedDuration(s);
-		}
-		else if (isKeyPressed(a))
-		{
-			towards = HeroTowards::left;
-			keyPressedDuration(a);
-		}
-		else if (isKeyPressed(d))
-		{
-			towards = HeroTowards::right;
-			keyPressedDuration(d);
-		}
+		else
+			isIdle = true;
 	}
 	else
-		isIdle = true;
+	{
+		aiMove();
+	}
 	moveAnimation();
-
-	fillBullet();
-
 	grassInvisible();
-
+	fillBullet();
 }
 
 bool Hero::isKeyPressed(cocos2d::EventKeyboard::KeyCode keyCode)
@@ -235,7 +245,6 @@ void Hero::keyPressedDuration(EventKeyboard::KeyCode keycode)
 	position = Vec2toTile(position + Vec2(aimx, aimy));
 	auto wallgrp = _map->getLayer("barrier");
 	int tilegid = wallgrp->getTileGIDAt(position);
-	log("tilegid:%d", tilegid);
 
 	if (tilegid)
 		return;
@@ -258,11 +267,11 @@ void Hero::bindMap(TMXTiledMap* map)
 
 void Hero::moveAnimation()
 {
-	static bool isFirst = true;
 	if (isFirst)
 	{
 		now = m_idle_right;
 		runAction(now);
+		isFirst = false;
 	}
 	if (isStatusChanged())
 	{
@@ -317,10 +326,117 @@ void Hero::grassInvisible()
 	auto pos = Vec2toTile(getPosition());
 	int gid = grassLayer->getTileGIDAt(pos);
 	if (gid)
-		setOpacity(128);
+	{
+		if (isai == false)
+			setOpacity(128);
+		else
+			setOpacity(1);
+	}
 	else
 		setOpacity(255);
 }
+
+Vec2 Hero::aiSearch()
+{
+	auto attackDistance=Director::getInstance()->getWinSize().height/4;         //得到ai的攻击范围
+	auto children=getParent()->getChildren();
+	vector<Node*> aim;
+	for (auto i : children)
+	{
+		/*if ((i->getPosition() - getPosition()).getLength() < attackDistance&&i!=this)*/
+			aim.push_back(i);
+	}
+	if (aim.empty())
+		return Vec2(5000,5000);
+	for (auto i : aim)
+	{
+		if (i->getTag() == HERO_TAG)
+			return i->getPosition();
+	}
+	for (auto i : aim)
+	{
+		if (i->getTag() ==DIAMOND_TAG)
+			return i->getPosition();
+	}
+	for (auto i : aim)
+	{
+		if (i->getTag() == TREASURE_TAG)
+			return i->getPosition();
+	}
+}
+
+void Hero::aiMove()
+{
+	int offsetx = 0, offsety = 0;
+	int choose;
+	/*if (aiSearch() != Vec2(5000,5000))
+	{
+		attack(aiSearch());
+	}*/
+	srand((unsigned)time(0));
+	choose = rand() % 5;
+	if (choose == 0)
+		isIdle = true;
+	else
+	{
+		isIdle = false;
+		if (choose == 1)
+		{
+			towards = HeroTowards::front;
+			offsetx = 0, offsety = 3;
+		}
+		else if (choose == 2)
+		{
+			towards = HeroTowards::back;
+			offsetx = 0, offsety = -3;
+		}
+		else if (choose == 3)
+		{
+			towards = HeroTowards::left;
+			offsetx = -3, offsety = 0;
+		}
+		else
+		{
+			towards = HeroTowards::right;
+			offsetx = 3, offsety = 0;
+		}
+	}
+
+	auto position = this->getPosition();
+	auto aimx = this->getContentSize().width / 2;
+	auto aimy = this->getContentSize().height / 2;
+	if (offsetx == 0)
+		aimx = 0;
+	if (offsetx < 0)
+		aimx = -aimx;
+	if (offsety == 0)
+		aimy = 0;
+	if (offsety < 0)
+		aimy = -aimy;
+	position = Vec2toTile(position + Vec2(aimx, aimy));
+	auto wallgrp = _map->getLayer("barrier");
+	int tilegid = wallgrp->getTileGIDAt(position);
+
+	if (tilegid)
+		return;
+
+	auto move = MoveTo::create(0.01f, getPosition()+Vec2(offsetx,offsety));
+	runAction(move);
+}
+
+
+void Hero::attack(Vec2 target)
+{
+}
+
+
+void Hero::setai()
+{
+	isai = true;
+}
+
+
+
 
 
 

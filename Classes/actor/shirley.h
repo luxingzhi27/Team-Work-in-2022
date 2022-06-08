@@ -23,9 +23,7 @@ public:
 
     bool onTouchBegan(Touch* touch, Event* unused_event);
 
-
     void specialAttack(cocos2d::Vec2 target);
-
 
     CREATE_FUNC(Shirley);
 

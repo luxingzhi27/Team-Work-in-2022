@@ -42,9 +42,12 @@ bool Shirley::init()
 	bindBullet("bullet1.png");
 	bindPhysicsBody();
 
-	auto TouchListener = EventListenerTouchOneByOne::create();
-	TouchListener->onTouchBegan = CC_CALLBACK_2(Shirley::onTouchBegan, this);
-	this->getEventDispatcher()->addEventListenerWithSceneGraphPriority(TouchListener, this);
+	if (isai==false)
+	{
+		auto TouchListener = EventListenerTouchOneByOne::create();
+		TouchListener->onTouchBegan = CC_CALLBACK_2(Shirley::onTouchBegan, this);
+		this->getEventDispatcher()->addEventListenerWithSceneGraphPriority(TouchListener, this);
+	}
 	return true;
 }
 
@@ -87,39 +90,38 @@ void Shirley::attack(Vec2 target)
 	{
 		_bullet = Bullet::create(BulletType);
 		_bullet->bindHero(static_cast<Hero*>(this));
-		_bullet->setPosition(this->getPosition());
-		
 		log("Bullet Created");
-		this->getParent()->addChild(_bullet);
-		auto map = this->_map;
-		
-	    _bullet->setAttributes(_ATK, _Reach, _Speed);
-		auto begin = this->getPosition()+this->getParent()->getPosition();
+		_bullet->setAttributes(_ATK, _Reach, _Speed);
+		auto begin = this->getPosition() + this->getParent()->getPosition();
 		auto route = target - begin;
 		route.normalize();
-		route *= _Reach;
-		auto Angle =route.angle(Vec2(1, 0), route);    
-		Angle =- Angle / 3.14159 * 180;  
-		_bullet->setRotation(route.y>0?Angle:-Angle);
 
+		route *= _Reach;
+		auto Angle = route.angle(Vec2(1, 0), route);
+		Angle = -Angle / 3.14159 * 180;
+		_bullet->setRotation(route.y > 0 ? Angle : -Angle);
+
+		_bullet->setPosition(this->getPosition() + route / _Reach * (this->getContentSize().width * 2));
+		this->getParent()->addChild(_bullet);
 		auto move = MoveBy::create(_Speed, route);
-		
+
 		auto selfRemove = RemoveSelf::create();
 		_bullet->runAction(Sequence::create(move, selfRemove, nullptr));
 		//每一次攻击都会使子弹数量减少
 		bulletNum--;
 		log("bulletNum:%d", bulletNum);
 	}
-	
-	
 }
 
 bool Shirley::onTouchBegan(Touch* touch, Event* unused_event)
 {
-	auto TouchLocation = Vec2(touch->getLocation().x, touch->getLocation().y);
-	//log("TOUCH");
-	attack(TouchLocation);
-	return true;
+	if (isai == false)
+	{
+		auto TouchLocation = Vec2(touch->getLocation().x, touch->getLocation().y);
+		//log("TOUCH");
+		attack(TouchLocation);
+		return true;
+	}{}
 }
 
 

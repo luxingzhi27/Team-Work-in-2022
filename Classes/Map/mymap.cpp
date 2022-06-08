@@ -22,12 +22,25 @@ bool MapLayer::init()
     m_hero = Shirley::create();
     m_hero->init();
     this->addChild(m_hero);
+
+
     
     auto bornGrp = m_map->getObjectGroup("bornpoint");       //获取英雄出生点对象层
     auto bornPoints = bornGrp->getObjects();
+
+ 
     srand((unsigned)time(0));
-    auto playerBorn = bornPoints[rand() % 10];
+    auto ran = rand() % 10;
+    auto playerBorn = bornPoints[ran];
     m_hero->setPosition(playerBorn.asValueMap().at("x").asFloat(), playerBorn.asValueMap().at("y").asFloat());
+
+    auto ai = Shirley::create();
+    ai->setai();
+    ai->init();
+    addChild(ai);
+    ai->bindMap(m_map);
+    ai->setPosition(Vec2(450,450) );
+
 
     m_hero->bindMap(m_map);         //绑定地图
 
@@ -157,8 +170,7 @@ void MapLayer::ConEve_Hero_Bullet(Hero* hero,Bullet* bullet)
     log("hero get hurt");
     hero->getHurt(bullet->getATK());
     bullet->onHit();
-    bullet->fillenergy();
-    
+    hero->fillEnergy();
 }
 void MapLayer::ConEve_Treasure_Bullet(Treasure* treasure, Bullet* bullet)
 {

@@ -11,6 +11,7 @@
 class Bullet;
 
 
+
 class Hero : public People
 {
 public:
@@ -61,7 +62,14 @@ public:
     //草丛中隐身
     void grassInvisible();
 
-    // implement the "static create()" method manually
+    cocos2d::Vec2 aiSearch();             //ai寻找周围的宝箱钻石或英雄
+
+    void aiMove();
+
+
+    virtual void attack(Vec2 target);
+
+    void setai();
     CREATE_FUNC(Hero);
 
 
@@ -90,6 +98,8 @@ protected:
     int bulletNum = MAX_BULLET_NUM;    //用于存放子弹的数量
     const char* BulletType;
     int diamondNum = 1;                //当前持有宝石数
+    bool isai = false;
+    bool isFirst = true;
 
 public:
     std::map<cocos2d::EventKeyboard::KeyCode, bool>  keys;
