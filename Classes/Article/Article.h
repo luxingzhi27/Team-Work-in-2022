@@ -32,7 +32,6 @@ public:
 	bool isDestroyed();
 private:
 	int _HP=TreasureHP;
-	TMXTiledMap* _map;
 	bool _isDestroyed = false;
 	MyBar* bar;
 };
@@ -47,7 +46,7 @@ public:
 	static Diamond* create(const char* filename);
 	bool init();
 	void run_action();
-	void setPosition(Vec2 Pos);
+	/*void setPosition(Vec2 Pos);*/
 	void bindPhysicsBody();
 private:
 	Sequence* _Appear;

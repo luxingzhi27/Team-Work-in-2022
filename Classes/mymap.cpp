@@ -35,6 +35,7 @@ bool MapLayer::init()
     //·ÅÖÃ±¦Ïä
     auto treasureGrp = m_map->getObjectGroup("treasure");
     auto treasurePoints = treasureGrp->getObjects();
+
     for (auto i : treasurePoints)
     {
         auto treasure = Treasure::create("treasure.png");

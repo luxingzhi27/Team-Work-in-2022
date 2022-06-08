@@ -1,5 +1,5 @@
 #include "Article.h"
-
+#include"mymap.h"
 
 // Print useful error message instead of segfaulting when files are not there.
 static void problemLoading(const char* filename)
@@ -62,6 +62,7 @@ void Treasure::getHurt(int hurt)
 		auto fadein = FadeIn::create(0.1f);
 		bar->BarPercentUpdate(getHP(), double(getHP()));
 		this->runAction(Sequence::create(fadein, fadeout,fadein->clone(),fadeout->clone(), nullptr));
+		setTag(50);
 		this->createDiamond();
 		this->removeFromParentAndCleanup(true);
 	}
@@ -71,10 +72,10 @@ void Treasure::getHurt(int hurt)
 void Treasure::createDiamond()
 {
 	auto dia = Diamond::create("diamond.png");
-	
-	this->getParent()->addChild(dia,10);
-	log("treasure position:(%f,%f)", this->getPosition().x, this->getPosition().y);
+	getParent()->addChild(dia);
 	dia->setPosition(getPosition());
+	log("treasure position:(%f,%f)", this->getPosition().x, this->getPosition().y);
+	dia->runAction(MoveBy::create(0.01, getParent()->getChildByTag(50)->getPosition() + getParent()->getPosition()));
 	dia->run_action();
 	log("dia position:(%f,%f)", dia->getPosition().x, dia->getPosition().y);
 }
@@ -139,11 +140,11 @@ void Diamond::run_action()
 	this->runAction(_Shining);
 }
 
-void Diamond::setPosition(Vec2 Pos)
-{
-	this->Node::setPosition(Pos.x + random(-30, 30), Pos.y + random(-30, 30));
-	log("setposition succeed");
-}
+//void Diamond::setPosition(Vec2 Pos)
+//{
+//	setPosition(Vec2(Pos.x + random(-30, 30), Pos.y + random(-30, 30)));
+//	log("setposition succeed");
+//}
 
 void Diamond::bindPhysicsBody()
 {
