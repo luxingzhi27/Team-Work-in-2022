@@ -56,34 +56,34 @@ endif()
 
 # add cross-platforms source files and header files 
 list(APPEND GAME_SOURCE
-     Classes/AppDelegate.cpp
-     Classes/FastCreating.cpp
-     Classes/HeroChoose.cpp
-     Classes/MapChoose.cpp
-     Classes/SettingScene.cpp
-     Classes/StartinterfaceScene.cpp
-     Classes/StartScene.cpp
+     Classes/Start/AppDelegate.cpp
+     Classes/SettingandCreating/FastCreating.cpp
+     Classes/ChooseScene/HeroChoose.cpp
+     Classes/ChooseScene/MapChoose.cpp
+     Classes/SettingandCreating/SettingScene.cpp
+     Classes/Start/StartinterfaceScene.cpp
+     Classes/Start/StartScene.cpp
      Classes/actor/hero.cpp
      Classes/actor/people.cpp
      Classes/actor/shirley.cpp
-     Classes/mymap.cpp
-     Classes/MyBar.cpp
+     Classes/Map/mymap.cpp
+     Classes/Bar/MyBar.cpp
      Classes/Article/Article.cpp
      Classes/Article/Bullet.cpp
      )
 list(APPEND GAME_HEADER
-     Classes/AppDelegate.h
-     Classes/FastCreating.h
-     Classes/HeroChoose.h
-     Classes/MapChoose.h
-     Classes/SettingScene.h
-     Classes/StartinterfaceScene.h
-     Classes/StartScene.h
+     Classes/Start/AppDelegate.h
+     Classes/SettingandCreating/FastCreating.h
+     Classes/ChooseScene/HeroChoose.h
+     Classes/ChooseScene/MapChoose.h
+     Classes/SettingandCreating/SettingScene.h
+     Classes/Start/StartinterfaceScene.h
+     Classes/Start/StartScene.h
      Classes/actor/hero.h
      Classes/actor/people.h
      Classes/actor/shirley.h
-     Classes/mymap.h
-     Classes/MyBar.h
+     Classes/Map/mymap.h
+     Classes/Bar/MyBar.h
      Classes/const/const.h
      Classes/Article/Article.h
      Classes/Article/Bullet.h
