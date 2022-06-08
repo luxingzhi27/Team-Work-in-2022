@@ -62,7 +62,6 @@ void Treasure::getHurt(int hurt)
 		auto fadein = FadeIn::create(0.1f);
 		bar->BarPercentUpdate(getHP(), double(getHP()));
 		this->runAction(Sequence::create(fadein, fadeout,fadein->clone(),fadeout->clone(), nullptr));
-		setTag(50);
 		this->createDiamond();
 		this->removeFromParentAndCleanup(true);
 	}
@@ -75,7 +74,7 @@ void Treasure::createDiamond()
 	getParent()->addChild(dia);
 	dia->setPosition(getPosition());
 	log("treasure position:(%f,%f)", this->getPosition().x, this->getPosition().y);
-	dia->runAction(MoveBy::create(0.01, getParent()->getChildByTag(50)->getPosition() + getParent()->getPosition()));
+	dia->runAction(MoveBy::create(0.01, getPosition() + getParent()->getPosition()));
 	dia->run_action();
 	log("dia position:(%f,%f)", dia->getPosition().x, dia->getPosition().y);
 }

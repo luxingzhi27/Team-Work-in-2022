@@ -1,6 +1,6 @@
 
 #include "AppDelegate.h"
-#include "StartinterfaceScene.h"
+#include "Start/StartinterfaceScene.h"
 #include "editor-support/cocostudio/SimpleAudioEngine.h"
 // #define USE_AUDIO_ENGINE 1
 

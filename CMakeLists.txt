@@ -56,7 +56,7 @@ endif()
 
 # add cross-platforms source files and header files 
 list(APPEND GAME_SOURCE
-     Classes/Start/AppDelegate.cpp
+     Classes/AppDelegate.cpp
      Classes/SettingandCreating/FastCreating.cpp
      Classes/ChooseScene/HeroChoose.cpp
      Classes/ChooseScene/MapChoose.cpp
@@ -72,7 +72,7 @@ list(APPEND GAME_SOURCE
      Classes/Article/Bullet.cpp
      )
 list(APPEND GAME_HEADER
-     Classes/Start/AppDelegate.h
+     Classes/AppDelegate.h
      Classes/SettingandCreating/FastCreating.h
      Classes/ChooseScene/HeroChoose.h
      Classes/ChooseScene/MapChoose.h
