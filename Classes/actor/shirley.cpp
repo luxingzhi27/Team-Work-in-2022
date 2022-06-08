@@ -1,5 +1,5 @@
 #include"shirley.h"
-#include"mymap.h"
+#include"Map/mymap.h"
 USING_NS_CC;
 
 Shirley::Shirley()

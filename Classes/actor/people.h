@@ -4,7 +4,7 @@
 #define __PEOPLE_H__
 #include"const/const.h"
 #include "cocos2d.h"
-#include"Mybar.h"
+#include"Bar/Mybar.h"
 
 
 #define MOVEDURATION 0.01

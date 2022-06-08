@@ -1,5 +1,5 @@
 #include "HeroChoose.h"
-#include "FastCreating.h"
+#include "SettingandCreating/FastCreating.h"
 #include "MapChoose.h"
 bool HeroChoose::init()
 {

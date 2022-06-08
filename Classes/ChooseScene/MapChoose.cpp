@@ -1,6 +1,6 @@
 #include "MapChoose.h"
-#include "FastCreating.h"
-#include"mymap.h"
+#include "SettingandCreating/FastCreating.h"
+#include"Map/mymap.h"
 bool MapChoose::init()
 {
 	if (!Scene::init())

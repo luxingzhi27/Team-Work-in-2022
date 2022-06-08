@@ -3,8 +3,8 @@
 #include "ui/CocosGUI.h"
 #include "editor-support/cocostudio/SimpleAudioEngine.h"
 #include "AudioEngine.h"
-#include "HeroChoose.h"
-#include "MapChoose.h"
+#include "ChooseScene/HeroChoose.h"
+#include "ChooseScene/MapChoose.h"
 using namespace cocos2d;
 using namespace ui;
 typedef void (*pFunc)(Ref*, Widget::TouchEventType);

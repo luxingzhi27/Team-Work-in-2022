@@ -3,7 +3,9 @@
 #define __Startinterface_SCENE_H__
 
 #include "cocos2d.h"
-
+#include "StartScene.h" 
+#include "cocostudio/CocoStudio.h"
+#include "ui/CocosGUI.h"
 class Startinterface : public cocos2d::Scene
 {
 public:

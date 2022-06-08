@@ -1,7 +1,5 @@
 #include "StartinterfaceScene.h"
-#include "StartScene.h" 
-#include "cocostudio/CocoStudio.h"
-#include "ui/CocosGUI.h"
+
 USING_NS_CC;
 
 

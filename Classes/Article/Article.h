@@ -8,7 +8,7 @@
 
 #include"cocos2d.h"
 #include"const/const.h"
-#include"Mybar.h"
+#include"Bar/Mybar.h"
 USING_NS_CC;
 
 

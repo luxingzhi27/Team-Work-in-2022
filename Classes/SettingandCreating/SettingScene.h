@@ -3,7 +3,8 @@
 #include "cocos2d.h"
 #include "ui/CocosGUI.h"
 #include "editor-support/cocostudio/SimpleAudioEngine.h"
-
+#include"Start/StartScene.h"
+#include "SettingandCreating/FastCreating.h"
 using namespace CocosDenshion;
 using namespace cocos2d;
 using namespace ui;

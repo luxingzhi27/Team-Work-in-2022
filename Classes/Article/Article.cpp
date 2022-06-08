@@ -1,5 +1,5 @@
 #include "Article.h"
-#include"mymap.h"
+#include"Map/mymap.h"
 
 // Print useful error message instead of segfaulting when files are not there.
 static void problemLoading(const char* filename)

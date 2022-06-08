@@ -1,7 +1,5 @@
 #include "StartScene.h" 
-#include "SettingScene.h" 
-#include "FastCreating.h"
-#include "HeroChoose.h"
+
 bool StartScene::init()
 {
 	if (!Scene::init())

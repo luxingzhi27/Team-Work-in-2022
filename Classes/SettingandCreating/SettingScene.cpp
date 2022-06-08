@@ -1,6 +1,5 @@
 #include "SettingScene.h" 
-#include"StartScene.h"
-#include "FastCreating.h"
+
 using namespace std;
 Scene* SettingScene::createScene()
 {
