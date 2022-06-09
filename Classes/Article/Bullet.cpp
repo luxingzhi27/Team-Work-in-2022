@@ -73,7 +73,7 @@ void Bullet::onHit()
 	SpecialEffect->setPosition(this->getPosition().x,this->getPosition().y);
 	if(this->getParent()!=nullptr)
 		this->getParent()->addChild(SpecialEffect, 10);
-	log("firework,%D,%D",SpecialEffect->getPosition().x, SpecialEffect->getPosition().y);
+	log("firework,%d,%d",SpecialEffect->getPosition().x, SpecialEffect->getPosition().y);
 	this->removeFromParentAndCleanup(true);
 }
 

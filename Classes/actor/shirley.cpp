@@ -27,7 +27,6 @@ bool Shirley::init()
 	setReach(SHIRLEY_REACH);
 	setSpeed(NORMAL_SPEED);
 	Max_energy = SHIRLEY_MAX_ENERGY;
-	energy = 10;
 	setTag(HERO_TAG);
 	//加载四个方向行走动画
 	m_front = People::getAnimate("front", "hero1", 4, -1);
