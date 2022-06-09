@@ -70,6 +70,7 @@ list(APPEND GAME_SOURCE
      Classes/Bar/MyBar.cpp
      Classes/Article/Article.cpp
      Classes/Article/Bullet.cpp
+     Classes/Article/Smoke.cpp
      )
 list(APPEND GAME_HEADER
      Classes/AppDelegate.h
@@ -87,6 +88,7 @@ list(APPEND GAME_HEADER
      Classes/const/const.h
      Classes/Article/Article.h
      Classes/Article/Bullet.h
+     Classes/Article/Smoke.h
      )
 
 if(ANDROID)
