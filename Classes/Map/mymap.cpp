@@ -81,19 +81,21 @@ cocos2d::TMXTiledMap* MapLayer::getMap() const
 void MapLayer::update(float dlt)
 {
     Node::update(dlt);
+    if (m_hero!=nullptr)
+    {
+        auto winSize = Director::getInstance()->getWinSize();
+        int x = MAX(m_hero->getPositionX(), winSize.width / 2);
+        int y = MAX(m_hero->getPositionY(), winSize.height / 2);
 
-    auto winSize = Director::getInstance()->getWinSize();
-    int x = MAX(m_hero->getPositionX(), winSize.width / 2);
-    int y = MAX(m_hero->getPositionY(), winSize.height / 2);
+        x = MIN(x, m_map->getTileSize().width * m_map->getMapSize().width - winSize.width / 2);
+        y = MIN(y, m_map->getTileSize().height * m_map->getMapSize().height - winSize.height / 2);
 
-    x = MIN(x, m_map->getTileSize().width * m_map->getMapSize().width - winSize.width / 2);
-    y = MIN(y, m_map->getTileSize().height * m_map->getMapSize().height - winSize.height / 2);
+        auto actualPos = Vec2(x, y);
+        auto centerView = Vec2(winSize.width / 2, winSize.height / 2);
 
-    auto actualPos = Vec2(x, y);
-    auto centerView = Vec2(winSize.width / 2, winSize.height / 2);
-
-    auto viewPoint = centerView-actualPos;
-    this->setPosition(viewPoint);
+        auto viewPoint = centerView - actualPos;
+        this->setPosition(viewPoint);
+    }
 
 
 }

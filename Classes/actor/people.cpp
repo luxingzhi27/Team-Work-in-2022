@@ -63,6 +63,7 @@ void People::getHurt(int hurt)
 	{
 		_HP = 0;
 		_isAlive = false;
+		this->removeFromParentAndCleanup(true);
 	}
 }
 

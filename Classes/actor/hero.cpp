@@ -27,6 +27,8 @@ bool Hero::init()
 	lastisIdle = isIdle;
 
 	this->scheduleUpdate();
+	this->schedule(CC_SCHEDULE_SELECTOR(Hero::fillBullet), 1.f);
+	this->schedule(CC_SCHEDULE_SELECTOR(Hero::fillHP), 1.f);
 	if (isai == false)           //如果不是ai才执行这一步
 	{
 		auto KeyListener = EventListenerKeyboard::create();
@@ -83,21 +85,26 @@ Hero* Hero::create(const char* file)
 //	_HP -= enemy._ATK;
 //}
 //
-void Hero::fillBullet()
+void Hero::fillBullet(float dt)
 {
-	static int cnt = 2;
-	cnt++;
-	//log("in fillBullet");
-	if (cnt % 160 == 1 && bulletNum < MAX_BULLET_NUM)
+	if (bulletNum < MAX_BULLET_NUM)
 	{
 		log("fill Bullet");
 		bulletNum++;
 	}
-	if (cnt == 1000000)
-		cnt = 0;
+}
+void Hero::fillHP(float dt)
+{
+	if (_HP < SHIRLEY_HP)
+	{
+		_HP += 300;
+		if (_HP > SHIRLEY_HP)
+			_HP = SHIRLEY_HP;
+	}
 }
 void Hero::fillEnergy()
 {
+	if(energy< SHIRLEY_MAX_ENERGY)
 	energy++;
 }
 //
@@ -197,7 +204,6 @@ void Hero::update(float dlt)
 	}
 	moveAnimation();
 	grassInvisible();
-	fillBullet();
 }
 
 bool Hero::isKeyPressed(cocos2d::EventKeyboard::KeyCode keyCode)
@@ -336,45 +342,84 @@ void Hero::grassInvisible()
 		setOpacity(255);
 }
 
-Vec2 Hero::aiSearch()
+Vec2 Hero::aiSearch(int &aimtype)
 {
-	auto attackDistance=Director::getInstance()->getWinSize().height/4;         //得到ai的攻击范围
 	auto children=getParent()->getChildren();
-	vector<Node*> aim;
+	vector<Node*> treasure;
+	vector<Node*> hero;
+	vector<Node*> diamond;
+
+	auto aipos = getPosition();
 	for (auto i : children)
 	{
-		/*if ((i->getPosition() - getPosition()).getLength() < attackDistance&&i!=this)*/
-			aim.push_back(i);
+		if (i != this)
+		{
+			auto pos = i->getPosition();
+			auto distance = pow(aipos.x - pos.x, 2) + pow(aipos.y - pos.y, 2);
+			if (distance < 10000)
+			{
+				if (i->getTag() == TREASURE_TAG)
+					treasure.push_back(i);
+				if (i->getTag() == HERO_TAG)
+					hero.push_back(i);
+				if (i->getTag() == DIAMOND_TAG)
+					diamond.push_back(i);
+			}
+		}
 	}
-	if (aim.empty())
-		return Vec2(5000,5000);
-	for (auto i : aim)
+	if (!hero.empty())
 	{
-		if (i->getTag() == HERO_TAG)
-			return i->getPosition();
+		log("hero!");
+		aimtype = HERO_TAG;
+		return hero[0]->getPosition();
 	}
-	for (auto i : aim)
+	else if (!diamond.empty())
 	{
-		if (i->getTag() ==DIAMOND_TAG)
-			return i->getPosition();
+		log("diamond!");
+		aimtype = DIAMOND_TAG;
+		return diamond[0]->getPosition();
 	}
-	for (auto i : aim)
+	else if (!treasure.empty())
 	{
-		if (i->getTag() == TREASURE_TAG)
-			return i->getPosition();
+		log("treasure!");
+		aimtype = TREASURE_TAG;
+		return treasure[0]->getPosition();
+	}
+	else
+	{
+		log("null");
+		return Vec2(5000, 5000);
 	}
 }
 
 void Hero::aiMove()
 {
+	int aimtype=-1;
 	int offsetx = 0, offsety = 0;
-	int choose;
-	/*if (aiSearch() != Vec2(5000,5000))
+	int choose=0;
+	auto aim = aiSearch(aimtype);
+	auto pos = getPosition();
+	if ( aim!= Vec2(5000,5000))
 	{
-		attack(aiSearch());
-	}*/
-	srand((unsigned)time(0));
-	choose = rand() % 5;
+		int offset=60;
+		if (aimtype == DIAMOND_TAG)
+			offset = -3;
+		else
+			attack(aim);
+		if (aim.x+offset < pos.x)
+			choose = 3;
+		else if (aim.y+offset < pos.y)
+			choose = 2;
+		else if (aim.x-offset > pos.x)
+			choose = 4;
+		else if (aim.y+offset > pos.y)
+			choose = 1;
+	}
+	else
+	{
+		srand((unsigned)time(0));
+		choose = rand() % 5;
+	}
 	if (choose == 0)
 		isIdle = true;
 	else

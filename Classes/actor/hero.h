@@ -23,7 +23,10 @@ public:
     static Hero* create(const char* file);
 
     //填充子弹
-    void fillBullet();
+    void fillBullet(float dt);
+
+    //随时间恢复血量
+    void fillHP(float dt);
 
     //增加能量
     void fillEnergy();
@@ -62,7 +65,7 @@ public:
     //草丛中隐身
     void grassInvisible();
 
-    cocos2d::Vec2 aiSearch();             //ai寻找周围的宝箱钻石或英雄
+    cocos2d::Vec2 aiSearch(int &aitype);             //ai寻找周围的宝箱钻石或英雄
 
     void aiMove();
 
