@@ -55,15 +55,5 @@ bool People::isAlive() const
 	return _isAlive;
 }
 
-void People::getHurt(int hurt)
-{
-	if (_HP > hurt)
-		_HP -= hurt;
-	else
-	{
-		_HP = 0;
-		_isAlive = false;
-		this->removeFromParentAndCleanup(true);
-	}
-}
+
 

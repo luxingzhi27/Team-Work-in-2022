@@ -21,11 +21,13 @@ bool Shirley::init()
 	//加载HP和ATK
 	setHP(SHIRLEY_HP);
 	InitHP = SHIRLEY_HP;
+	MaxCurrentHP = SHIRLEY_HP;
 	setATK(SHIRLEY_ATK);
 	InitATK = SHIRLEY_ATK;
 	setReach(SHIRLEY_REACH);
 	setSpeed(NORMAL_SPEED);
 	Max_energy = SHIRLEY_MAX_ENERGY;
+	energy = 10;
 	setTag(HERO_TAG);
 	//加载四个方向行走动画
 	m_front = People::getAnimate("front", "hero1", 4, -1);
@@ -40,13 +42,15 @@ bool Shirley::init()
 	m_idle_right = People::getAnimate("right", "hero1", 1, -1);
 
 	bindBullet("bullet1.png");
-	bindPhysicsBody();
+	bindSpell("blask1.png");
 
+	bindPhysicsBody();
 	if (isai==false)
 	{
-		auto TouchListener = EventListenerTouchOneByOne::create();
-		TouchListener->onTouchBegan = CC_CALLBACK_2(Shirley::onTouchBegan, this);
-		this->getEventDispatcher()->addEventListenerWithSceneGraphPriority(TouchListener, this);
+		auto MouseListener = EventListenerMouse::create();
+		MouseListener->onMouseDown = CC_CALLBACK_1(Shirley::onMouseDown, this);
+		this->getEventDispatcher()->addEventListenerWithSceneGraphPriority(MouseListener, this);
+
 	}
 	return true;
 }
@@ -54,11 +58,9 @@ bool Shirley::init()
 Shirley* Shirley::create(const char* file)
 {
 	Shirley* sprite = new Shirley();
-	if (sprite && sprite->initWithFile(file))
+	if (sprite && sprite->initWithFile(file)&&sprite->init())
 	{
 		sprite->autorelease();
-		sprite->setHP(SHIRLEY_HP);
-		sprite->setATK(SHIRLEY_ATK);
 		return sprite;
 	}
 	CC_SAFE_DELETE(sprite);
@@ -68,15 +70,14 @@ Shirley* Shirley::create(const char* file)
 
 bool Shirley::bindPhysicsBody()
 {
-
-	auto physicsBody = cocos2d::PhysicsBody::createBox(this->getContentSize(), PhysicsMaterial(0.0f, 1.0f, 0.0f));
-	physicsBody->setDynamic(false);
-	physicsBody->setGravityEnable(false);
-	physicsBody->setRotationEnable(false);
-	physicsBody->setContactTestBitmask(HERO_CONTACT_MASK);
-	physicsBody->setCategoryBitmask(HERO_CATEGORY_MASK);
-	physicsBody->setTag(HERO_TAG);
-	this->setPhysicsBody(physicsBody);
+	auto _physicsBody = cocos2d::PhysicsBody::createBox(Size(10, 40), PhysicsMaterial(0.0f, 1.0f, 0.0f));
+	_physicsBody->setDynamic(false);
+	_physicsBody->setGravityEnable(false);
+	_physicsBody->setRotationEnable(false);
+	_physicsBody->setContactTestBitmask(HERO_CONTACT_MASK);
+	_physicsBody->setCategoryBitmask(HERO_CATEGORY_MASK);
+	_physicsBody->setTag(HERO_TAG);
+	this->setPhysicsBody(_physicsBody);
 	/*Director::getInstance()->getRunningScene()->getPhysics3DWorld()->setDebugDrawEnable(false);
 	Director::getInstance()->getRunningScene()->setPhysics3DDebugCamera(nullptr);*/
 	return true;
@@ -85,25 +86,27 @@ bool Shirley::bindPhysicsBody()
 
 void Shirley::attack(Vec2 target)
 {
-	log("Attack");
+	if(!isai)
+		log("Attack");
+
 	if (bulletNum > 1)
 	{
 		_bullet = Bullet::create(BulletType);
 		_bullet->bindHero(static_cast<Hero*>(this));
 		log("Bullet Created");
 		_bullet->setAttributes(_ATK, _Reach, _Speed);
+
 		auto begin = this->getPosition() + this->getParent()->getPosition();
 		auto route = target - begin;
 		route.normalize();
-
-		route *= _Reach;
+		route *= _bullet->getReach();
 		auto Angle = route.angle(Vec2(1, 0), route);
 		Angle = -Angle / 3.14159 * 180;
 		_bullet->setRotation(route.y > 0 ? Angle : -Angle);
+		_bullet->setPosition(this->getPosition() + route / _Reach * 75);
 
-		_bullet->setPosition(this->getPosition() + route / _Reach * (this->getContentSize().width * 2));
 		this->getParent()->addChild(_bullet);
-		auto move = MoveBy::create(_Speed, route);
+		auto move = MoveBy::create(_bullet->getSpeed(), route);
 
 		auto selfRemove = RemoveSelf::create();
 		_bullet->runAction(Sequence::create(move, selfRemove, nullptr));
@@ -113,20 +116,51 @@ void Shirley::attack(Vec2 target)
 	}
 }
 
-bool Shirley::onTouchBegan(Touch* touch, Event* unused_event)
+void Shirley::onMouseDown(Event* event)
 {
-	if (isai == false)
+	EventMouse* ev = (EventMouse*)event;
+	auto touchLocation = Vec2(ev->getCursorX(), ev->getCursorY());
+	switch (ev->getMouseButton())
 	{
-		auto TouchLocation = Vec2(touch->getLocation().x, touch->getLocation().y);
-		//log("TOUCH");
-		attack(TouchLocation);
-		return true;
-	}{}
+		case EventMouse::MouseButton::BUTTON_LEFT:
+			attack(touchLocation);
+			break;
+		case EventMouse::MouseButton::BUTTON_RIGHT:
+			specialAttack(touchLocation);
+			break;
+	}
 }
+
 
 
 
 void Shirley::specialAttack(Vec2 target)
 {
+	if (energy == Max_energy)
+	{
+		energy = 0;
+		log("special attack");
+
+		_spell = Bullet::create(SpellType);
+		_spell->setTag(SPELL_TAG);
+		_spell->setAnchorPoint(Vec2(0, 0.5));
+		_spell->setAttributes(_ATK*SHIRLEY_SPELL_RATE, SHIRLEY_SPELL_REACH, SHIRLEY_SPELL_SPEED);
+
+		auto begin = this->getPosition() + this->getParent()->getPosition();
+		auto route = target - begin;
+		route.normalize();
+		route *= _spell->getReach();
+		auto Angle = route.angle(Vec2(1, 0), route);
+		Angle = -Angle / 3.14159 * 180;
+		_spell->setRotation(route.y > 0 ? Angle : -Angle);
+
+		_spell->setPosition(this->getPosition() + route / _spell->getReach() * 75);
+		this->getParent()->addChild(_spell);
+		auto move = MoveBy::create(_spell->getSpeed(), route);
+
+		auto selfRemove = RemoveSelf::create();
+		_spell->runAction(Sequence::create(move, selfRemove, nullptr));
+	}
+	
 }
 

@@ -5,6 +5,7 @@
 #include"const/const.h"
 #include"map"
 #include"people.h"
+#include"Article/Article.h"
 #include"Article/Bullet.h"
 #include<cmath>
 
@@ -36,6 +37,7 @@ public:
 
 
     void bindBullet(const char* bulletType);
+    void bindSpell(const char* spelltype);
 
     //升级(获得宝石)
     void getDiamond();
@@ -71,8 +73,29 @@ public:
 
 
     virtual void attack(Vec2 target);
+    virtual void specialAttack(cocos2d::Vec2 target);
 
     void setai();
+
+    bool isAI()const;
+
+    int getEnergy()const;
+
+    bool isPoisoning()const;
+
+    void getPoisoning(float rate);
+
+    void setPoisoning(bool flag);
+
+
+    void getHurt(int hurt);
+
+    void die();
+
+    void createDiamond();
+
+    void outofFighting(float dlt);//脱战
+
     CREATE_FUNC(Hero);
 
 
@@ -98,12 +121,15 @@ protected:
     bool lastisIdle;
     bool isTouched = false;
     Bullet* _bullet;
+    Bullet* _spell;
     int bulletNum = MAX_BULLET_NUM;    //用于存放子弹的数量
     const char* BulletType;
+    const char* SpellType;
     int diamondNum = 1;                //当前持有宝石数
     bool isai = false;
     bool isFirst = true;
-
+    int _isPoisoning = 0;                 //中毒状态
+    int _isfighting = 0;             //脱战状态
 public:
     std::map<cocos2d::EventKeyboard::KeyCode, bool>  keys;
 };

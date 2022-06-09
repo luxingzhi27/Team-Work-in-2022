@@ -44,6 +44,16 @@ bool MapLayer::init()
 
     m_hero->bindMap(m_map);         //绑定地图
 
+    smoke_vec.resize(64);          //初始化毒雾
+    for (int cnt = 0; cnt < 64; cnt++)
+    {
+        smoke_vec[cnt] = Smoke::create("smoke.png");
+    }
+
+    //每三十秒产生一圈毒雾
+    this->schedule(SEL_SCHEDULE(&MapLayer::createSmoke), 30.0f);
+
+
 
     //放置宝箱
     auto treasureGrp = m_map->getObjectGroup("treasure");
@@ -161,22 +171,105 @@ bool MapLayer::onContactBegin(cocos2d::PhysicsContact& contact)
             auto hero = dynamic_cast<Hero*>(nodeA);
             ConEve_Hero_Diamond(hero, dia);
         }
+
+
+        /////////////////////人中毒
+        else if (nodeA->getTag() == HERO_TAG && nodeB->getTag() == SMOKE_TAG)
+        {
+            isConEve = true;
+            ConEve = ContactEvents::HeroPoisoning;
+            auto hero = dynamic_cast<Hero*>(nodeA);
+            auto smoke = dynamic_cast<Smoke*>(nodeB);
+            ConEveBe_Hero_Smoke(hero, smoke);
+        }
+        else if (nodeB->getTag() == HERO_TAG && nodeA->getTag() == SMOKE_TAG)
+        {
+            isConEve = true;
+            ConEve = ContactEvents::HeroPoisoning;
+            auto hero = dynamic_cast<Hero*>(nodeB);
+            auto smoke = dynamic_cast<Smoke*>(nodeA);
+            ConEveBe_Hero_Smoke(hero, smoke);
+        }
+        ///////////////////////人中大招
+        else if (nodeA->getTag() == SPELL_TAG && nodeB->getTag() == HERO_TAG)
+        {
+            isConEve = true;
+            ConEve = ContactEvents::HeroHurt;
+            auto spell = dynamic_cast<Bullet*>(nodeA);
+            auto hero = dynamic_cast<Hero*>(nodeB);
+            ConEve_Hero_Bullet(hero, spell);
+        }
+        else if (nodeB->getTag() == SPELL_TAG && nodeA->getTag() == HERO_TAG)
+        {
+            isConEve = true;
+            ConEve = ContactEvents::HeroHurt;
+            auto spell = dynamic_cast<Bullet*>(nodeB);
+            auto hero = dynamic_cast<Hero*>(nodeA);
+            ConEve_Hero_Bullet(hero, spell);
+        }
+        /////////////////////////////宝箱中大招
+        else if (nodeA->getTag() == SPELL_TAG && nodeB->getTag() == TREASURE_TAG)
+        {
+            isConEve = true;
+            ConEve = ContactEvents::TreasureHurt;
+            auto spell = dynamic_cast<Bullet*>(nodeA);
+            auto treasure = dynamic_cast<Treasure*>(nodeB);
+            ConEve_Treasure_Bullet(treasure,spell);
+        }
+        else if (nodeB->getTag() == SPELL_TAG && nodeA->getTag() == TREASURE_TAG)
+        {
+            isConEve = true;
+            ConEve = ContactEvents::TreasureHurt;
+            auto spell = dynamic_cast<Bullet*>(nodeB);
+            auto treasure = dynamic_cast<Treasure*>(nodeA);
+            ConEve_Treasure_Bullet(treasure, spell);
+        }
     }
 
-    return true;
+  return true;
   
 }
 
+void MapLayer::onContactSeparate(cocos2d::PhysicsContact& contact)
+{
+    auto nodeA = contact.getShapeA()->getBody()->getNode();
+    auto nodeB = contact.getShapeB()->getBody()->getNode();
+    if (nodeA && nodeB)
+    {
+        if (nodeA->getTag() == HERO_TAG && nodeB->getTag() == SMOKE_TAG)
+        {
+            auto hero = dynamic_cast<Hero*>(nodeA);
+            auto smoke = dynamic_cast<Smoke*>(nodeB);
+            ConEveEnd_Hero_Smoke(hero, smoke);
+        }
+        else if (nodeB->getTag() == HERO_TAG && nodeA->getTag() == SMOKE_TAG)
+        {
+            isConEve = true;
+            ConEve = ContactEvents::HeroPoisoning;
+            auto hero = dynamic_cast<Hero*>(nodeB);
+            auto smoke = dynamic_cast<Smoke*>(nodeA);
+            ConEveEnd_Hero_Smoke(hero, smoke);
+        }
+    }
+
+}
+
+
 void MapLayer::ConEve_Hero_Bullet(Hero* hero,Bullet* bullet)
 {
-    log("hero get hurt");
+    if (hero->isAI())
+        log("enermy get hurt");
+    else
+        log("hero get hurt");
+    bullet->fillenergy();
     hero->getHurt(bullet->getATK());
     bullet->onHit();
-    hero->fillEnergy();
+  
 }
 void MapLayer::ConEve_Treasure_Bullet(Treasure* treasure, Bullet* bullet)
 {
     log("treasure get hurt");
+    log("map size x:%d,y:%d", m_map->getMapSize().width, m_map->getMapSize().height);
     treasure->getHurt(bullet->getATK());
     bullet->onHit();
 
@@ -184,17 +277,90 @@ void MapLayer::ConEve_Treasure_Bullet(Treasure* treasure, Bullet* bullet)
 
 void MapLayer::ConEve_Hero_Diamond(Hero* hero, Diamond* dia)
 {
-    log("hero get diamond");
+    if (hero->isAI())
+        log("enermy get diamond");
+    else
+        log("hero get diamond");
     hero->getDiamond();
     dia->removeFromParentAndCleanup(true);
 }
 
+void MapLayer::ConEveBe_Hero_Smoke(Hero* hero, Smoke* smoke)
+{
+    if (hero->isAI())
+        log("enermy get into smoke");
+    else
+        log("hero get into smoke");
+    hero->setPoisoning(true);
+}
+
+void MapLayer::ConEveEnd_Hero_Smoke(Hero* hero, Smoke* smoke)
+{
+    if (hero->isAI())
+        log("enermy get outof smoke");
+    else
+        log("hero get outof smoke");
+    hero->setPoisoning(false);
+   
+}
+
+void MapLayer::createSmoke(float dlt)
+{
+    if (smoke_index < 64)
+    {
+        for (int cnt = 0; cnt < smoke_range; cnt++, smoke_index++)//下
+        {
+            int x = ((8 - smoke_range) / 2 + cnt) * 192;
+            int y = (8 - smoke_range) / 2 * 192;
+
+            smoke_vec[smoke_index]->setPosition(x, y);
+            smoke_vec[smoke_index]->RunfadeIn();
+            this->addChild(smoke_vec[smoke_index]);
+        }
+        for (int cnt = 0; cnt < smoke_range; cnt++, smoke_index++)//上
+        {
+            int x = ((8 - smoke_range) / 2 + cnt) * 192;
+            int y = (8-((8-smoke_range)/2)-1) * 192;
+            smoke_vec[smoke_index]->setPosition(x, y);
+            smoke_vec[smoke_index]->RunfadeIn();
+            this->addChild(smoke_vec[smoke_index]);
+        }
+        for (int cnt = 1; cnt < smoke_range-1; cnt++, smoke_index++)//左
+        {
+            int x = (8 - smoke_range) / 2 * 192;
+            int y = ((8 - smoke_range) / 2 + cnt) * 192;
+            smoke_vec[smoke_index]->setPosition(x, y);
+            smoke_vec[smoke_index]->RunfadeIn();
+            this->addChild(smoke_vec[smoke_index]);
+        }
+        for (int cnt = (8 - smoke_range) / 2+1; cnt < (8-(8-smoke_range)/2)-1; cnt++, smoke_index++)//右
+        {
+            int x = (8-(8-smoke_range)/2-1) * 192;
+            int y = cnt * 192;
+            smoke_vec[smoke_index]->setPosition(x, y);
+            smoke_vec[smoke_index]->RunfadeIn();
+            this->addChild(smoke_vec[smoke_index]);
+        }
+        smoke_range -= 2;
+    }
+    
+}
+
+void MapLayer::ConEve_Hero_Spell(Hero* hero, Bullet* spell)
+{
+    if(hero->isAI())
+        log("enermy get spell hurt");
+    else
+        log("hero get spell hurt");
+    hero->getHurt(spell->getATK());
+    spell->onHit();
+}
 
 
 Scene* MapLayer::createMapScene()
 {
     auto scene = Scene::createWithPhysics();
-   // scene->getPhysicsWorld()->setDebugDrawMask(PhysicsWorld::DEBUGDRAW_ALL);
+  //  scene->getPhysicsWorld()->setDebugDrawMask(PhysicsWorld::DEBUGDRAW_ALL);
     auto layer = MapLayer::create();
     scene->addChild(layer);
     return scene;

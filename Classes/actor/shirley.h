@@ -21,9 +21,9 @@ public:
     //¹¥»÷·½Ê½
     virtual void attack(Vec2 target);
 
-    bool onTouchBegan(Touch* touch, Event* unused_event);
+    void onMouseDown(Event* event);
 
-    void specialAttack(cocos2d::Vec2 target);
+    virtual void specialAttack(cocos2d::Vec2 target);
 
     CREATE_FUNC(Shirley);
 

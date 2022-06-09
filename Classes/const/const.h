@@ -11,7 +11,7 @@
 
 
 
-#define AmplificationRate  1.1
+#define AmplificationRate  0.2
 
 //hero
 //#define LEVEL_UP_ATK 400
@@ -28,8 +28,11 @@ enum class HeroTowards { front, back, right, left };
 #define SHIRLEY_ATK 500
 #define SHIRLEY_REACH 250
 #define SHIRLEY_SPEED 1.2
-#define SHIRLEY_MAX_ENERGY 4
+#define SHIRLEY_MAX_ENERGY 10
 
+#define SHIRLEY_SPELL_RATE 3
+#define SHIRLEY_SPELL_REACH 400
+#define SHIRLEY_SPELL_SPEED 1.0
 
 
 //////////////////物品相关
@@ -46,7 +49,12 @@ enum class HeroTowards { front, back, right, left };
 #define BULLET_CONTACT_MASK 3
 #define BULLET_CATEGORY_MASK 3
 
-enum class ContactEvents{HeroHurt,TreasureHurt,getDiamond};
+#define SMOKE_TAG 5
+#define SMOKE_ATK_COEFFICIENT 0.1f
+
+#define SPELL_TAG 6
+
+enum class ContactEvents{HeroHurt,TreasureHurt,getDiamond, HeroPoisoning};
 
 
 #endif

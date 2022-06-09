@@ -27,8 +27,12 @@ bool Hero::init()
 	lastisIdle = isIdle;
 
 	this->scheduleUpdate();
-	this->schedule(CC_SCHEDULE_SELECTOR(Hero::fillBullet), 1.f);
-	this->schedule(CC_SCHEDULE_SELECTOR(Hero::fillHP), 1.f);
+	this->schedule(CC_SCHEDULE_SELECTOR(Hero::fillBullet), 1.0f);
+	if(!_isfighting)
+		this->schedule(CC_SCHEDULE_SELECTOR(Hero::fillHP), 1.0f);
+	this->schedule(CC_SCHEDULE_SELECTOR(Hero::outofFighting), 1.0f);
+	this->schedule(SEL_SCHEDULE(&Hero::getPoisoning), 1.0f);
+
 	if (isai == false)           //如果不是ai才执行这一步
 	{
 		auto KeyListener = EventListenerKeyboard::create();
@@ -62,106 +66,52 @@ Hero* Hero::create(const char* file)
 }
 
 
-//void Hero::attack(Vec2 target)
-//{	
-//	if (projectileNum > 0)
-//	{
-//		Projectile = Sprite::create("projectile.png");
-//		this->addChild(Projectile);
-//		auto begin = this->getPosition();
-//		auto route = target - begin;
-//		route.normalize();
-//		route *= 1000;
-//		auto move = MoveTo::create(1.f, route);
-//		Projectile->runAction(move);
-//
-//		//每一次攻击都会使子弹数量减少
-//		projectileNum--;
-//	}
-//}
-//
-//void Hero::getHurt(Hero& enemy)
-//{
-//	_HP -= enemy._ATK;
-//}
-//
+
 void Hero::fillBullet(float dt)
 {
 	if (bulletNum < MAX_BULLET_NUM)
 	{
-		log("fill Bullet");
+		if(!isai)
+			log("fill Bullet");
 		bulletNum++;
 	}
 }
 void Hero::fillHP(float dt)
 {
-	if (_HP < SHIRLEY_HP)
+	if (_HP < MaxCurrentHP)
 	{
 		_HP += 300;
-		if (_HP > SHIRLEY_HP)
-			_HP = SHIRLEY_HP;
+		if (_HP > MaxCurrentHP)
+			_HP = MaxCurrentHP;
 	}
 }
 void Hero::fillEnergy()
 {
-	if(energy< SHIRLEY_MAX_ENERGY)
-	energy++;
+	if (this!=nullptr&&_isAlive)
+	{
+		if (energy < Max_energy)
+			energy++;
+		_isfighting = 5;     //解除脱战
+	}
+	
 }
-//
-//void Hero::fillEnergy()
-//{
-//	if (energy < 6)
-//		energy++;
-//}
-//
-//void Hero::specialAttack(Vec2 target)
-//{
-	//if (energy == MAX_ENERGY)
-	//{
-	//	Blast = Sprite::create("blast.png");
-	//	this->addChild(Blast);
-	//	Blast->setRotation(180);
-	//	Blast->setScale(0.2);
-	//	auto begin = this->getPosition();
-	//	auto route = target - begin;
-	//	route.normalize();
-	//	auto Angle = route.angle(Vec2(1, 0),route);     //得到发射方向与冲击波初始方向夹角
-	//	Angle = Angle / 3.14159 * 180;           //转换成角度
-	//	Blast->setRotation(Angle);
-	//	route *= 1000;
-	//	auto move = MoveTo::create(1.f, route);
-	//	Blast->runAction(move);
-	//	log("successfully shoot");
-	//	if ((int)Blast->getPosition().getLength()==1000)
-	//		removeChild(Blast);
-
-	//	energy = 0;        //能量清空 
-	//}
-//}
-
-
-//void Hero::levelUp()
-//{
-//	_ATK += LEVEL_UP_ATK;
-//	_HP += LEVEL_UP_HP;
-//}
 
 void Hero::bindBullet(const char* bulletType)
 {
 	BulletType = bulletType;
 }
 
+void Hero::bindSpell(const char* spelltype)
+{
+	SpellType = spelltype;
+}
+
 void Hero::getDiamond()
 {
 	diamondNum++;
-	_HP += AmplificationRate * InitHP;
-	_ATK += AmplificationRate * InitATK;
-	//一个闪动特效，说明他升级了
-	auto recov = TintTo::create(0.2f, this->getColor());
-	auto tintto = TintTo::create(0.2f, Color3B::WHITE);
-	auto seq = Sequence::create(tintto, recov, nullptr);
-	runAction(Sequence::create(seq, seq->clone(), seq->clone(), nullptr));
-	log("hero shine");
+	MaxCurrentHP+= static_cast<int>(AmplificationRate * InitHP);
+	_HP += static_cast<int>(AmplificationRate * InitHP);
+	_ATK += static_cast<int>( AmplificationRate * InitATK);
 }
 
 void Hero::update(float dlt)
@@ -204,6 +154,12 @@ void Hero::update(float dlt)
 	}
 	moveAnimation();
 	grassInvisible();
+
+	if (!_isAlive)
+	{
+		die();
+	}
+		
 }
 
 bool Hero::isKeyPressed(cocos2d::EventKeyboard::KeyCode keyCode)
@@ -369,25 +325,25 @@ Vec2 Hero::aiSearch(int &aimtype)
 	}
 	if (!hero.empty())
 	{
-		log("hero!");
+	//	log("hero!");
 		aimtype = HERO_TAG;
 		return hero[0]->getPosition();
 	}
 	else if (!diamond.empty())
 	{
-		log("diamond!");
+	//	log("diamond!");
 		aimtype = DIAMOND_TAG;
 		return diamond[0]->getPosition();
 	}
 	else if (!treasure.empty())
 	{
-		log("treasure!");
+	//	log("treasure!");
 		aimtype = TREASURE_TAG;
 		return treasure[0]->getPosition();
 	}
 	else
 	{
-		log("null");
+	//	log("null");
 		return Vec2(5000, 5000);
 	}
 }
@@ -474,18 +430,93 @@ void Hero::attack(Vec2 target)
 {
 }
 
+void Hero::specialAttack(cocos2d::Vec2 target)
+{
+}
+
 
 void Hero::setai()
 {
 	isai = true;
 }
 
+bool Hero::isAI() const
+{
+	if(this!=nullptr)
+		return isai;
+}
+
+int Hero::getEnergy() const
+{
+	return energy;
+}
+
+
+bool Hero::isPoisoning() const
+{
+	return _isPoisoning;
+}
+
+void Hero::getPoisoning(float dlt)
+{
+	if (_isPoisoning)
+	{
+		_isfighting = 5;
+		_HP -= static_cast<int>(MaxCurrentHP * SMOKE_ATK_COEFFICIENT);
+		log("get poisoning");
+		log("current hp:%d", _HP);
+		////////下添加动作
+	}
+
+}
+
+void Hero::setPoisoning(bool flag)
+{
+	if (flag)
+		_isPoisoning++;
+	else
+		_isPoisoning--;
+}
 
 
 
 
 
+void Hero::getHurt(int hurt)
+{
+	_isfighting = 5;
+	if (_HP > hurt)
+		_HP -= hurt;
+	else
+	{
+		_HP = 0;
+		_isAlive = false;
+	}
+}
 
+void Hero::die()
+{
+	for (int i = 0; i < diamondNum; i++)
+	{
+		this->createDiamond();
+	}
+	this->removeFromParentAndCleanup(true);
+}
 
+void Hero::createDiamond()
+{
+	auto dia = Diamond::create("diamond.png");
+	getParent()->addChild(dia);
+	dia->setPosition(getPosition());
+	log("treasure position:(%f,%f)", this->getPosition().x, this->getPosition().y);
+	dia->runAction(MoveTo::create(0.01, getPosition() + getParent()->getPosition()+Vec2(random(-50,50), random(-50, 50))));
+	//加随机数避免宝石位置重叠
+	dia->run_action();
+	log("dia position:(%f,%f)", dia->getPosition().x, dia->getPosition().y);
+}
 
-
+void Hero::outofFighting(float dlt)
+{
+	if (_isfighting > 0)
+		_isfighting--;
+}

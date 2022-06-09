@@ -45,11 +45,11 @@ public:
 
     void setSpeed(float Speed) { _Speed = Speed; }
 
-    void getHurt(int hurt);
 
 protected:
     int _HP;
     int InitHP;  //人物1级时的HP
+    int MaxCurrentHP;//HP上限
     int _ATK;
     int InitATK;     //人物1级时的ATK
     int _Reach;  //子弹射程

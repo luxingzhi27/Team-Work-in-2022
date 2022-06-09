@@ -25,6 +25,7 @@ bool Bullet::init()
 	setTag(BULLET_TAG);
 	bindPhysicsbody();
 	return true;
+	this->scheduleUpdate();
 }
 
 void Bullet::setAttributes(int atk, int reach, float speed)
@@ -35,9 +36,19 @@ void Bullet::setAttributes(int atk, int reach, float speed)
 }
 
 
-int Bullet::getATK()
+int Bullet::getATK()const
 {
 	return _ATK;
+}
+
+int Bullet::getReach() const
+{
+	return _Reach;
+}
+
+float Bullet::getSpeed() const
+{
+	return _FlyingSpeed;
 }
 
 void Bullet::setType(const char* filename)
@@ -59,8 +70,9 @@ void Bullet::onHit()
 	SpecialEffect->setSpeed(700);
 	SpecialEffect->setLife(0.1);
 	SpecialEffect->setLifeVar(0.05);
-	SpecialEffect->setPosition(this->getPosition().x+25,this->getPosition().y+25);
-	this->getParent()->addChild(SpecialEffect, 10);
+	SpecialEffect->setPosition(this->getPosition().x,this->getPosition().y);
+	if(this->getParent()!=nullptr)
+		this->getParent()->addChild(SpecialEffect, 10);
 	log("firework,%D,%D",SpecialEffect->getPosition().x, SpecialEffect->getPosition().y);
 	this->removeFromParentAndCleanup(true);
 }
@@ -68,6 +80,12 @@ void Bullet::onHit()
 void Bullet::fillenergy()
 {
 	_hero->fillEnergy();
+	if (!_hero->isAI())
+	{
+		log("fill energy");
+		log("current energy:%d", _hero->getEnergy());
+	}
+	
 }
 
 void Bullet::bindPhysicsbody()
@@ -85,4 +103,18 @@ void Bullet::bindPhysicsbody()
 void Bullet::bindHero(Hero* hero)
 {
 	_hero = hero;
+	_hero->retain();
+}
+
+void Bullet::update(float dlt)
+{
+	Node::update(dlt);
+	if (_hero != nullptr)
+	{
+		if (!_hero->isAlive())
+		{
+			this->removeFromParentAndCleanup(true);
+		}
+	}
+	
 }
