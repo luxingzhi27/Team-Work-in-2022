@@ -1,6 +1,9 @@
 #include "mymap.h"
+#include"SettingandCreating/FastCreating.h"
 #include<cstdlib>
 #include<ctime>
+#include<vector>
+#include<algorithm>
 
 USING_NS_CC;
 
@@ -19,27 +22,58 @@ bool MapLayer::init()
     m_map->setPosition(Vec2(0, 0));
     this->addChild(m_map);
 
-    m_hero = Shirley::create();
+    int playerHeroType = HeroNum;           //选择英雄种类
+
+    m_hero=chooseHero(playerHeroType,m_hero);
     m_hero->init();
     this->addChild(m_hero);
 
+    int aiNum = 9;                         //选择ai数量
+    for (int i = 0; i <aiNum ; i++)
+    {
+        auto aiHeroType = rand() % 4;
+        auto ai = Hero::create();
+        ai=chooseHero(aiHeroType, ai);
+        ais.pushBack(ai);
+        ai->setai();
+        ai->init();
+        addChild(ai);
+        ai->bindMap(m_map);
+    }
 
-    
+
     auto bornGrp = m_map->getObjectGroup("bornpoint");       //获取英雄出生点对象层
     auto bornPoints = bornGrp->getObjects();
 
- 
+
+    std::vector<int> playerPos;
     srand((unsigned)time(0));
     auto ran = rand() % 10;
     auto playerBorn = bornPoints[ran];
     m_hero->setPosition(playerBorn.asValueMap().at("x").asFloat(), playerBorn.asValueMap().at("y").asFloat());
+    playerPos.push_back(ran);
 
-    auto ai = Shirley::create();
-    ai->setai();
-    ai->init();
-    addChild(ai);
-    ai->bindMap(m_map);
-    ai->setPosition(Vec2(450,450) );
+    for (auto i : ais)
+    {
+        int r = 0;
+        while (1)
+        {
+            //srand((unsigned)time(0));
+            r = rand() % 10;
+            if (std::count(playerPos.begin(),playerPos.end(),r))
+                continue;
+            else
+            {
+                playerPos.push_back(r);
+                break;
+            }
+        }
+        auto playerBorn = bornPoints[r];
+        i->setPosition(playerBorn.asValueMap().at("x").asFloat(), playerBorn.asValueMap().at("y").asFloat());
+        log("%f,%f", playerBorn.asValueMap().at("x").asFloat(), playerBorn.asValueMap().at("y").asFloat());
+    }
+
+    
 
 
     m_hero->bindMap(m_map);         //绑定地图
@@ -91,6 +125,13 @@ cocos2d::TMXTiledMap* MapLayer::getMap() const
 void MapLayer::update(float dlt)
 {
     Node::update(dlt);
+    int cnt = 0;
+    auto children = getChildren();
+    for (auto i : children)
+    {
+        if (i->getTag() == HERO_TAG)
+            cnt++;
+    }
     if (m_hero!=nullptr)
     {
         auto winSize = Director::getInstance()->getWinSize();
@@ -106,8 +147,14 @@ void MapLayer::update(float dlt)
         auto viewPoint = centerView - actualPos;
         this->setPosition(viewPoint);
     }
-
-
+    if (m_hero != nullptr && cnt == 1)
+    {
+        //win
+    }
+    else if (m_hero == nullptr)
+    {
+        //defeat
+    }
 }
 
 bool MapLayer::onContactBegin(cocos2d::PhysicsContact& contact)
@@ -354,6 +401,28 @@ void MapLayer::ConEve_Hero_Spell(Hero* hero, Bullet* spell)
         log("hero get spell hurt");
     hero->getHurt(spell->getATK());
     spell->onHit();
+}
+
+Hero* MapLayer::chooseHero(int choose,Hero* _hero)
+{
+    switch (choose)
+    {
+        case 0:
+            _hero = Shirley::create();
+            break;
+        case 1:
+            _hero = Nita::create();
+            break;
+        case 2:
+            _hero = Colt::create();
+            break;
+        case 3:
+            _hero = Leon::create();
+            break;
+        defalt:
+            break;
+    }
+    return _hero;
 }
 
 

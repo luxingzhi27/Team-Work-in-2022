@@ -66,6 +66,9 @@ list(APPEND GAME_SOURCE
      Classes/actor/hero.cpp
      Classes/actor/people.cpp
      Classes/actor/shirley.cpp
+     Classes/actor/colt.cpp
+     Classes/actor/leon.cpp
+     Classes/actor/nita.cpp
      Classes/Map/mymap.cpp
      Classes/Bar/MyBar.cpp
      Classes/Article/Article.cpp
@@ -83,6 +86,9 @@ list(APPEND GAME_HEADER
      Classes/actor/hero.h
      Classes/actor/people.h
      Classes/actor/shirley.h
+     Classes/actor/colt.h
+     Classes/actor/leon.h
+     Classes/actor/nita.h
      Classes/Map/mymap.h
      Classes/Bar/MyBar.h
      Classes/const/const.h

@@ -4,6 +4,9 @@
 
 
 #include"actor/shirley.h"
+#include"actor/nita.h"
+#include"actor/colt.h"
+#include"actor/leon.h"
 #include"const/const.h"
 #include"actor/hero.h"
 #include"Article/Article.h"
@@ -26,9 +29,11 @@ public:
     void ConEveEnd_Hero_Smoke(Hero* hero, Smoke* smoke);
     void createSmoke(float dlt);
     void ConEve_Hero_Spell(Hero* hero, Bullet* spell);
+    Hero* chooseHero(int choose,Hero* _hero);                      //选择英雄的函数
 private:
     cocos2d::TMXTiledMap* m_map;
-    Shirley* m_hero;
+    Hero* m_hero;
+    Vector<Hero*> ais;                                  //存放ai的数组
     ContactEvents ConEve;
     bool isConEve = false;
     std::vector<Smoke*> smoke_vec;

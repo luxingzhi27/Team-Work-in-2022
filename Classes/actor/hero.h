@@ -96,6 +96,8 @@ public:
 
     void outofFighting(float dlt);//ÍÑÕ½
 
+    int getBulletNum();
+
     CREATE_FUNC(Hero);
 
 

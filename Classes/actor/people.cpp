@@ -55,5 +55,10 @@ bool People::isAlive() const
 	return _isAlive;
 }
 
+int People::getMaxHP()
+{
+	return MaxCurrentHP;
+}
+
 
 

@@ -8,6 +8,7 @@ bool HeroChoose::init()
 
 	auto visibleSize = Director::getInstance()->getVisibleSize();
 	Vec2 origin = Director::getInstance()->getVisibleOrigin();
+
 	//Sprite* myHero[5];
 	//for (int i = 0; i < 5; i++)
 	//{

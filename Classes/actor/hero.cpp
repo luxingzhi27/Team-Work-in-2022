@@ -74,6 +74,7 @@ void Hero::fillBullet(float dt)
 		if(!isai)
 			log("fill Bullet");
 		bulletNum++;
+		//更改子弹数量
 	}
 }
 void Hero::fillHP(float dt)
@@ -83,6 +84,7 @@ void Hero::fillHP(float dt)
 		_HP += 300;
 		if (_HP > MaxCurrentHP)
 			_HP = MaxCurrentHP;
+		//更改血条
 	}
 }
 void Hero::fillEnergy()
@@ -92,8 +94,9 @@ void Hero::fillEnergy()
 		if (energy < Max_energy)
 			energy++;
 		_isfighting = 5;     //解除脱战
+		//蓝条更改
+
 	}
-	
 }
 
 void Hero::bindBullet(const char* bulletType)
@@ -361,7 +364,10 @@ void Hero::aiMove()
 		if (aimtype == DIAMOND_TAG)
 			offset = -3;
 		else
+		{
+			specialAttack(aim);
 			attack(aim);
+		}
 		if (aim.x+offset < pos.x)
 			choose = 3;
 		else if (aim.y+offset < pos.y)
@@ -462,7 +468,7 @@ void Hero::getPoisoning(float dlt)
 	if (_isPoisoning)
 	{
 		_isfighting = 5;
-		_HP -= static_cast<int>(MaxCurrentHP * SMOKE_ATK_COEFFICIENT);
+		getHurt(static_cast<int>(MaxCurrentHP * SMOKE_ATK_COEFFICIENT));
 		log("get poisoning");
 		log("current hp:%d", _HP);
 		////////下添加动作
@@ -492,6 +498,7 @@ void Hero::getHurt(int hurt)
 		_HP = 0;
 		_isAlive = false;
 	}
+	//更改血条
 }
 
 void Hero::die()
@@ -509,7 +516,7 @@ void Hero::createDiamond()
 	getParent()->addChild(dia);
 	dia->setPosition(getPosition());
 	log("treasure position:(%f,%f)", this->getPosition().x, this->getPosition().y);
-	dia->runAction(MoveTo::create(0.01, getPosition() + getParent()->getPosition()+Vec2(random(-50,50), random(-50, 50))));
+	dia->runAction(MoveTo::create(0.01, getPosition() + getParent()->getPosition()+Vec2(random(-25,25), random(-25, 25))));
 	//加随机数避免宝石位置重叠
 	dia->run_action();
 	log("dia position:(%f,%f)", dia->getPosition().x, dia->getPosition().y);
@@ -519,4 +526,9 @@ void Hero::outofFighting(float dlt)
 {
 	if (_isfighting > 0)
 		_isfighting--;
+}
+
+int Hero::getBulletNum()
+{
+	return bulletNum;
 }

@@ -47,7 +47,8 @@ bool Shirley::init()
 	if (isai==false)
 	{
 		auto MouseListener = EventListenerMouse::create();
-		MouseListener->onMouseDown = CC_CALLBACK_1(Shirley::onMouseDown, this);
+		if(isai==false)
+			MouseListener->onMouseDown = CC_CALLBACK_1(Shirley::onMouseDown, this);
 		this->getEventDispatcher()->addEventListenerWithSceneGraphPriority(MouseListener, this);
 
 	}
@@ -112,21 +113,25 @@ void Shirley::attack(Vec2 target)
 		//每一次攻击都会使子弹数量减少
 		bulletNum--;
 		log("bulletNum:%d", bulletNum);
+		//更改子弹数量
 	}
 }
 
 void Shirley::onMouseDown(Event* event)
 {
-	EventMouse* ev = (EventMouse*)event;
-	auto touchLocation = Vec2(ev->getCursorX(), ev->getCursorY());
-	switch (ev->getMouseButton())
+	if (isai == false)
 	{
-		case EventMouse::MouseButton::BUTTON_LEFT:
-			attack(touchLocation);
-			break;
-		case EventMouse::MouseButton::BUTTON_RIGHT:
-			specialAttack(touchLocation);
-			break;
+		EventMouse* ev = (EventMouse*)event;
+		auto touchLocation = Vec2(ev->getCursorX(), ev->getCursorY());
+		switch (ev->getMouseButton())
+		{
+			case EventMouse::MouseButton::BUTTON_LEFT:
+				attack(touchLocation);
+				break;
+			case EventMouse::MouseButton::BUTTON_RIGHT:
+				specialAttack(touchLocation);
+				break;
+		}
 	}
 }
 

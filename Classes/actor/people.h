@@ -45,6 +45,8 @@ public:
 
     void setSpeed(float Speed) { _Speed = Speed; }
 
+    int getMaxHP();
+
 
 protected:
     int _HP;

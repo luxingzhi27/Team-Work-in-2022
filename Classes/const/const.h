@@ -50,7 +50,7 @@ enum class HeroTowards { front, back, right, left };
 #define BULLET_CATEGORY_MASK 3
 
 #define SMOKE_TAG 5
-#define SMOKE_ATK_COEFFICIENT 0.1f
+#define SMOKE_ATK_COEFFICIENT 0.05f
 
 #define SPELL_TAG 6
 
