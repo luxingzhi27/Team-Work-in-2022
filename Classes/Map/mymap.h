@@ -43,9 +43,11 @@ private:
     std::vector<Smoke*> smoke_vec;
     int smoke_range = 8;
     int smoke_index = 0;
-    Label* label;
-    Label* label2;
-    int Num;
+    Label* label;//显示是否有大招
+    Label* label2;//显示攻击力
+    Label* label3;//显示剩余普工数
+    int ATKNum;
+    int BULLETNum;
 };
 
 #endif 

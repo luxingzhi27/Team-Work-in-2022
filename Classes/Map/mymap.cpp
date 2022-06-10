@@ -5,7 +5,7 @@
 #include<algorithm>
 #include"ChooseScene\AIchoose.h"
 #include"global.h"
-
+#include "EndScene/EndScene.h"
 USING_NS_CC;
 
 bool MapLayer::init()
@@ -22,14 +22,20 @@ bool MapLayer::init()
     BlueBar = BarCreate(Vec2(200, VisibleSize.height - 40), "BlueBar.png");
     BlueBar->setScale(1.8, 1.2);
 
-    Num = 0;
-    auto path = StringUtils::format("ATK:%d", Num);
+
     label2 = Label::createWithSystemFont("", "fonts/Marker Felt.ttf", 35);
     label2->setTextColor(Color4B::ORANGE);
     label2->setAnchorPoint(Vec2::ANCHOR_MIDDLE);
     label2->setScaleX(1.35f);
     label2->setPosition(Vec2(90, VisibleSize.height - 90));
     label2->enableShadow();
+
+    label3 = Label::createWithSystemFont("", "fonts/Marker Felt.ttf", 35);
+    label3->setTextColor(Color4B::ORANGE);
+    label3->setAnchorPoint(Vec2::ANCHOR_MIDDLE);
+    label3->setScaleX(1.35f);
+    label3->setPosition(Vec2(95, VisibleSize.height - 130));
+    label3->enableShadow();
 
     m_map = TMXTiledMap::create("desert.tmx");
     m_map->setPosition(Vec2(0, 0));
@@ -152,9 +158,14 @@ void MapLayer::update(float dlt)
     }
     if (m_hero!=nullptr)
     {
-        Num = m_hero->getATK();
-        auto path = StringUtils::format("ATK:%d", Num);
-        label2->setString(path);
+        ATKNum = m_hero->getATK();
+        auto ATK = StringUtils::format("ATK:%d", ATKNum);
+        label2->setString(ATK);
+
+        BULLETNum = m_hero->getBulletNum();
+        auto BULLET = StringUtils::format("BULLET:%d", BULLETNum);
+        label3->setString(BULLET);
+
         BloodBar->setPercent(double(m_hero->getHP()) / m_hero->getMaxHP() * 100);
         BlueBar->setPercent(double(m_hero->getEnergy() )/ m_hero->getMaxEnergy() * 100);
         if (BlueBar->getPercent() == 100.f)
@@ -176,11 +187,11 @@ void MapLayer::update(float dlt)
     }
     if (m_hero != nullptr && cnt == 1)
     {
-        //win
+        Director::getInstance()->replaceScene(EndScene::createScene(true));
     }
     else if (m_hero == nullptr)
     {
-        //defeat
+        Director::getInstance()->replaceScene(EndScene::createScene(false));
     }
 }
 
@@ -463,6 +474,7 @@ Scene* MapLayer::createMapScene()
     scene->addChild(layer);
     scene->addChild(layer->label);
     scene->addChild(layer->label2);
+    scene->addChild(layer->label3);
     scene->addChild(layer->BloodBar);
     scene->addChild(layer->BlueBar);
     auto ExitImage = Close_create([](Ref* ref, Widget::TouchEventType type)
