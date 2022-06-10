@@ -15,8 +15,20 @@ bool MapLayer::init()
     }
     //添加调度器
     this->scheduleUpdate();
-
     auto VisibleSize = Director::getInstance()->getVisibleSize();
+    BloodBar = BarCreate(Vec2(200, VisibleSize .height-20),"BloodBar.png");
+    BloodBar->setScale(1.8,1.2);
+    BlueBar = BarCreate(Vec2(200, VisibleSize.height - 40), "BlueBar.png");
+    BlueBar->setScale(1.8, 1.2);
+
+    Num = 0;
+    auto path = StringUtils::format("ATK:%d", Num);
+    label2 = Label::createWithSystemFont("", "fonts/Marker Felt.ttf", 35);
+    label2->setTextColor(Color4B::ORANGE);
+    label2->setAnchorPoint(Vec2::ANCHOR_MIDDLE);
+    label2->setScaleX(1.35f);
+    label2->setPosition(Vec2(90, VisibleSize.height - 90));
+    label2->enableShadow();
 
     m_map = TMXTiledMap::create("desert.tmx");
     m_map->setPosition(Vec2(0, 0));
@@ -28,6 +40,12 @@ bool MapLayer::init()
     m_hero->init();
     this->addChild(m_hero);
 
+    label = Label::createWithTTF("Cheese Play!", "fonts/Marker Felt.ttf", 30);
+    label->setTextColor(Color4B::ORANGE);
+    label->setAnchorPoint(Vec2::ANCHOR_MIDDLE_RIGHT);
+    label->setPosition(Vec2(BlueBar->getPosition())+Vec2(400,0));
+    label->setScaleX(1.35f);
+    label->enableShadow();
     int aiNum = 9;                         //选择ai数量
     for (int i = 0; i <aiNum ; i++)
     {
@@ -116,7 +134,6 @@ bool MapLayer::init()
 }
 
 
-
 cocos2d::TMXTiledMap* MapLayer::getMap() const
 {
     return m_map;
@@ -134,6 +151,15 @@ void MapLayer::update(float dlt)
     }
     if (m_hero!=nullptr)
     {
+        Num = m_hero->getATK();
+        auto path = StringUtils::format("ATK:%d", Num);
+        label2->setString(path);
+        BloodBar->setPercent(double(m_hero->getHP()) / m_hero->getMaxHP() * 100);
+        BlueBar->setPercent(double(m_hero->getEnergy() )/ m_hero->getMaxEnergy() * 100);
+        if (BlueBar->getPercent() == 100.f)
+            label->setVisible(true);
+        else
+            label->setVisible(false);
         auto winSize = Director::getInstance()->getWinSize();
         int x = MAX(m_hero->getPositionX(), winSize.width / 2);
         int y = MAX(m_hero->getPositionY(), winSize.height / 2);
@@ -426,11 +452,50 @@ Hero* MapLayer::chooseHero(int choose,Hero* _hero)
 }
 
 
+
 Scene* MapLayer::createMapScene()
 {
+    //auto VisibleSize = Director::getInstance()->getVisibleSize();
+    //auto tw = LayerColor::create(Color4B::GRAY);
+    //tw->setAnchorPoint(Vec2::ANCHOR_BOTTOM_LEFT);
+    //tw->setContentSize(Size(450, 80));
+    //tw->setPosition(0, VisibleSize.height-80);
+
     auto scene = Scene::createWithPhysics();
-  //  scene->getPhysicsWorld()->setDebugDrawMask(PhysicsWorld::DEBUGDRAW_ALL);
     auto layer = MapLayer::create();
+
     scene->addChild(layer);
+    //scene->addChild(tw);
+    scene->addChild(layer->label);
+    scene->addChild(layer->label2);
+    scene->addChild(layer->BloodBar);
+    scene->addChild(layer->BlueBar);
+    auto ExitImage = Close_create([](Ref* ref, Widget::TouchEventType type)
+        {
+            switch (type) {
+            case Widget::TouchEventType::ENDED:
+                Director::getInstance()->end();
+                break;
+            default:
+                break;
+            }
+        });
+    scene->addChild(ExitImage);
+
+    auto visibleSize = Director::getInstance()->getVisibleSize();
+    Vec2 origin = Director::getInstance()->getVisibleOrigin();
+    auto menuImage = MenuImageCreate();
+    menuImage->setCallback(CC_CALLBACK_1(MapLayer::ButtonEvent, layer, scene));
+    auto pMenu = MenuCreate("Menu", menuImage,
+        Vec2(visibleSize.width - 90, visibleSize.height - 45));
+    scene->addChild(pMenu);
     return scene;
+}
+
+
+void MapLayer::ButtonEvent(cocos2d::Ref* pSender, Scene* scene)
+{
+    //Director::getInstance()->stopAnimation();
+    auto layer = MenuLayer::create();
+    scene->addChild(layer);
 }

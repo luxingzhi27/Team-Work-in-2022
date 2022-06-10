@@ -14,8 +14,7 @@ bool People::init()
 {
 	if (!Sprite::init())
 		return false;
-	//auto BloodBar = MyBar::createLayer("BloodBar.png", this);
-	//addChild(BloodBar);
+
 	return true;
 }
 

@@ -17,7 +17,7 @@
 //#define LEVEL_UP_ATK 400
 //#define LEVEL_UP_HP 2000
 #define MAX_BULLET_NUM 6
-//#define MAX_ENERGY 4
+#define MAX_ENERGY 4
 #define HERO_CONTACT_MASK 1
 #define HERO_CATEGORY_MASK 1
 #define HERO_TAG 1

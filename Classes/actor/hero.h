@@ -9,9 +9,9 @@
 #include"Article/Bullet.h"
 #include<cmath>
 
+#define BloodTag 1
+#define BlueTag 2
 class Bullet;
-
-
 
 class Hero : public People
 {
@@ -101,7 +101,8 @@ public:
     CREATE_FUNC(Hero);
 
 
-
+    void BarUpdate(float dt);
+    int getMaxEnergy() { return Max_energy; };
 protected:
     int energy = 0;            //ÄÜÁ¿Öµ
     int Max_energy;

@@ -19,7 +19,7 @@ bool SettingScene::init()
 		{
 			switch (type) {
 			case Widget::TouchEventType::ENDED:
-				Director::getInstance()->popScene();
+				Director::getInstance()->replaceScene(StartScene::create());
 				break;
 			default:
 				break;

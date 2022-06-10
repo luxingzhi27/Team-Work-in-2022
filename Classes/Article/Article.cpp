@@ -33,9 +33,8 @@ bool Treasure::init()
 	this->_HP = TreasureHP;
 	this->setTag(TREASURE_TAG);
 	bindPhysicsBody();
-	bar = MyBar::create();
-	bar->init();
-	addChild(bar);
+	BloodBar = BarCreate(Vec2(25, 55), "BloodBar.png");
+	addChild(BloodBar);
 	return true;
 }
 
@@ -52,7 +51,8 @@ void Treasure::getHurt(int hurt)
 		auto fadeout = FadeOut::create(0.05f);
 		auto fadein = FadeIn::create(0.05f);
 		this->runAction(Sequence::create(fadeout, fadein, nullptr));
-		bar->BarPercentUpdate(hurt, double(getHP()));
+		BarPercentUpdate(BloodBar, hurt, 4000);
+		
 	}
 	else
 	{
@@ -60,7 +60,6 @@ void Treasure::getHurt(int hurt)
 		_isDestroyed = true;
 		auto fadeout = FadeOut::create(0.1f);
 		auto fadein = FadeIn::create(0.1f);
-		bar->BarPercentUpdate(getHP(), double(getHP()));
 		this->runAction(Sequence::create(fadein, fadeout,fadein->clone(),fadeout->clone(), nullptr));
 		this->createDiamond();
 		this->removeFromParentAndCleanup(true);

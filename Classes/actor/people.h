@@ -4,7 +4,7 @@
 #define __PEOPLE_H__
 #include"const/const.h"
 #include "cocos2d.h"
-#include"Bar/Mybar.h"
+#include "SettingandCreating/FastCreating.h"
 
 
 #define MOVEDURATION 0.01
@@ -49,6 +49,7 @@ public:
 
 
 protected:
+
     int _HP;
     int InitHP;  //人物1级时的HP
     int MaxCurrentHP;//HP上限
@@ -57,6 +58,7 @@ protected:
     int _Reach;  //子弹射程
     float _Speed;//子弹的飞行速度
     bool _isAlive;
+
 };
 
 #endif

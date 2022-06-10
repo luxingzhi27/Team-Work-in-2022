@@ -16,10 +16,19 @@ Hero::~Hero()
 
 }
 
+
+
 bool Hero::init()
 {
 	if (!People::init())
 		return false;
+	ProgressTimer* progressBlood=ProgressCreate(BloodTag, "BloodBar.png", Vec2(15, 75));
+	this->addChild(progressBlood);
+	this->schedule(CC_SCHEDULE_SELECTOR(Hero::BarUpdate), 0.5f);
+	ProgressTimer* progressBlue = ProgressCreate(BlueTag, "BlueBar.png", Vec2(15, 65));
+	this->addChild(progressBlue);
+
+
 
 	towards = HeroTowards::right;
 	isIdle = true;
@@ -28,6 +37,8 @@ bool Hero::init()
 
 	this->scheduleUpdate();
 	this->schedule(CC_SCHEDULE_SELECTOR(Hero::fillBullet), 1.0f);
+
+
 	if(!_isfighting)
 		this->schedule(CC_SCHEDULE_SELECTOR(Hero::fillHP), 1.0f);
 	this->schedule(CC_SCHEDULE_SELECTOR(Hero::outofFighting), 1.0f);
@@ -35,6 +46,8 @@ bool Hero::init()
 
 	if (isai == false)           //如果不是ai才执行这一步
 	{
+		ProgressTimer* progressBlue = ProgressCreate(BlueTag, "BlueBar.png", Vec2(15, 65));
+		this->addChild(progressBlue);
 		auto KeyListener = EventListenerKeyboard::create();
 		KeyListener->onKeyPressed = [=](EventKeyboard::KeyCode keycode, Event* event) {
 			keys[keycode] = true;
@@ -48,8 +61,6 @@ bool Hero::init()
 	
 	return true;
 }
-
-
 
 
 Hero* Hero::create(const char* file)
@@ -66,9 +77,18 @@ Hero* Hero::create(const char* file)
 }
 
 
+void Hero::BarUpdate(float dt)
+{
+	auto progressBlood = (ProgressTimer*)this->getChildByTag(BloodTag);
+	progressBlood->setPercentage(double(_HP) / MaxCurrentHP * 100);  //这里是百分制显示
+	auto progressBlue = (ProgressTimer*)this->getChildByTag(BlueTag);
+	progressBlue->setPercentage(double(energy) / Max_energy * 100);  //这里是百分制显示
+
+}
 
 void Hero::fillBullet(float dt)
 {
+
 	if (bulletNum < MAX_BULLET_NUM)
 	{
 		if(!isai)
@@ -95,7 +115,6 @@ void Hero::fillEnergy()
 			energy++;
 		_isfighting = 5;     //解除脱战
 		//蓝条更改
-
 	}
 }
 
@@ -498,7 +517,6 @@ void Hero::getHurt(int hurt)
 		_HP = 0;
 		_isAlive = false;
 	}
-	//更改血条
 }
 
 void Hero::die()

@@ -12,6 +12,7 @@
 #include"Article/Article.h"
 #include"Article/Bullet.h"
 #include"Article/Smoke.h"
+#include "MenuLayer/MenuLayer.h"
 class MapLayer : public cocos2d::Layer
 {
 public:
@@ -30,7 +31,10 @@ public:
     void createSmoke(float dlt);
     void ConEve_Hero_Spell(Hero* hero, Bullet* spell);
     Hero* chooseHero(int choose,Hero* _hero);                      //选择英雄的函数
+    void ButtonEvent(cocos2d::Ref* pSender, Scene* scene);
 private:
+    LoadingBar* BloodBar;
+    LoadingBar* BlueBar;
     cocos2d::TMXTiledMap* m_map;
     Hero* m_hero;
     Vector<Hero*> ais;                                  //存放ai的数组
@@ -39,6 +43,9 @@ private:
     std::vector<Smoke*> smoke_vec;
     int smoke_range = 8;
     int smoke_index = 0;
+   Label* label;
+   Label* label2;
+   int Num;
 };
 
 #endif 

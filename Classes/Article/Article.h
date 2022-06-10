@@ -8,7 +8,7 @@
 
 #include"cocos2d.h"
 #include"const/const.h"
-#include"Bar/Mybar.h"
+#include "SettingandCreating/FastCreating.h"
 USING_NS_CC;
 
 
@@ -33,7 +33,7 @@ public:
 private:
 	int _HP=TreasureHP;
 	bool _isDestroyed = false;
-	MyBar* bar;
+	LoadingBar* BloodBar;
 };
 
 /////////////////////////////////

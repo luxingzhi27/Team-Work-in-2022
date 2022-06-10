@@ -7,7 +7,7 @@ bool StartScene::init()
 		return false;
 	}
 	//设置背景图片
-	auto bgImage = Sprite::create("bg.webp");
+	auto bgImage = Sprite::create("preview0.jpg");
 	bgImage->setAnchorPoint(Vec2::ANCHOR_BOTTOM_LEFT);
 	bgImage->setPosition(Vec2(origin.x, origin.y));
 	//缩放图片使之铺满全屏
@@ -29,7 +29,7 @@ bool StartScene::init()
 		{
 			switch (type) {
 			case Widget::TouchEventType::ENDED:
-				Director::getInstance()->pushScene(HeroChoose::create());
+				Director::getInstance()->replaceScene(HeroChoose::create());
 				break;
 			default:
 				break;
@@ -39,7 +39,7 @@ bool StartScene::init()
 		{
 			switch (type) {
 			case Widget::TouchEventType::ENDED:
-				Director::getInstance()->pushScene(SettingScene::createScene());
+				Director::getInstance()->replaceScene(SettingScene::createScene());
 				break;
 			default:
 				break;
@@ -81,7 +81,7 @@ void StartScene::Button_Add(std::vector<Button*> buttonList)
 	{
 		(*iterator)->setPosition(Vec2(
 			origin.x + visibleSize.width / 2,
-			origin.y + visibleSize.height * 0.6f - (iterator - buttonList.begin())*0.85f * (*iterator)->getContentSize().height));
+			origin.y + visibleSize.height * 0.6f - (iterator - buttonList.begin())*0.7f * (*iterator)->getContentSize().height));
 		this->addChild(*iterator);
 	}
 
@@ -92,6 +92,5 @@ StartScene::StartScene()//构造函数中获取窗口相关参数
 	//在构造函数中进行窗口变量获取和音乐播放
 	visibleSize = Director::getInstance()->getVisibleSize();
 	origin = Director::getInstance()->getVisibleOrigin();
-	CocosDenshion::SimpleAudioEngine::getInstance()->playBackgroundMusic("music.mp3", true);
-	CocosDenshion::SimpleAudioEngine::getInstance()->setBackgroundMusicVolume(0.5);
+
 }

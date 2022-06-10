@@ -9,15 +9,19 @@ bool HeroChoose::init()
 	auto visibleSize = Director::getInstance()->getVisibleSize();
 	Vec2 origin = Director::getInstance()->getVisibleOrigin();
 
-	//Sprite* myHero[5];
-	//for (int i = 0; i < 5; i++)
-	//{
-	//	char imageName[15] = { 0 };
-	//	sprintf(imageName, "myHero%d", i);
-	//	myHero[i] = Sprite::create(imageName);
-	//	myHero[i]->setPosition(visibleSize.width * (i + 1) / 6, visibleSize.height / 2);
-	//	this->addChild(myHero[i], i);
-	//}
+	Sprite* myHero[5];
+	for (int i = 1; i < 5; i++)
+	{
+		std::string str = "animation/hero_";
+		char ch = '0';
+		ch += i;
+		str += ch;
+		str += ".png";
+		myHero[i] = Sprite::create(str);
+		myHero[i]->setScale(2.5);
+		myHero[i]->setPosition(visibleSize.width * (i) / 5, visibleSize.height / 1.8);
+		this->addChild(myHero[i], i);
+	}
 
 	//创建一个提示文本
 	auto label = Label::createWithTTF("Choose Your Hero", "fonts/Marker Felt.ttf", 58);
@@ -47,7 +51,7 @@ bool HeroChoose::init()
 					if (HeroBox[m]->isSelected() && m != 0)
 						HeroBox[m]->setSelected(false);
 				}
-				HeroNum = 0;
+				ChHeroNum = 0;
 			}
 		});
 	HeroBox[1]->addEventListener([&](Ref* ref, ui::CheckBox::EventType type)
@@ -59,7 +63,7 @@ bool HeroChoose::init()
 					if (HeroBox[m]->isSelected() && m != 1)
 						HeroBox[m]->setSelected(false);
 				}
-				HeroNum = 1;
+				ChHeroNum = 1;
 			}
 		});
 	HeroBox[2]->addEventListener([&](Ref* ref, ui::CheckBox::EventType type)
@@ -71,7 +75,7 @@ bool HeroChoose::init()
 					if (HeroBox[m]->isSelected() && m != 2)
 						HeroBox[m]->setSelected(false);
 				}
-				HeroNum = 2;
+				ChHeroNum = 2;
 			}
 		});
 	HeroBox[3]->addEventListener([&](Ref* ref, ui::CheckBox::EventType type)
@@ -83,7 +87,7 @@ bool HeroChoose::init()
 					if (HeroBox[m]->isSelected() && m != 3)
 						HeroBox[m]->setSelected(false);
 				}
-				HeroNum = 3;
+				ChHeroNum = 3;
 			}
 		});
 
