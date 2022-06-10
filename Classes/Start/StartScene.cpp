@@ -29,7 +29,7 @@ bool StartScene::init()
 		{
 			switch (type) {
 			case Widget::TouchEventType::ENDED:
-				Director::getInstance()->replaceScene(HeroChoose::create());
+				Director::getInstance()->getRunningScene()->addChild(HeroChoose::create());
 				break;
 			default:
 				break;
@@ -67,10 +67,7 @@ bool StartScene::init()
 		});
 	addChild(ExitImage);
 	Button_Add({ StartButton,SettingsButton,HelpButton});//将按钮添加到屏幕上
-	//CCLayerMultiplex{ CCLyaer1,CCLayer2...Null };
-	//((CCLayerMultiplex*)m_pParent)->switchTo(0);
-	//CCTexture2D* texture = CCTextureCache::sharedTextureCache()->addImage("bg2.png");
-	//bg->setTexture(texture);
+
 	return true;
 }
 

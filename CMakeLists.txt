@@ -59,7 +59,7 @@ list(APPEND GAME_SOURCE
      Classes/AppDelegate.cpp
      Classes/SettingandCreating/FastCreating.cpp
      Classes/ChooseScene/HeroChoose.cpp
-     Classes/ChooseScene/MapChoose.cpp
+     Classes/ChooseScene/AIChoose.cpp
      Classes/SettingandCreating/SettingScene.cpp
      Classes/Start/StartinterfaceScene.cpp
      Classes/Start/StartScene.cpp
@@ -79,7 +79,7 @@ list(APPEND GAME_HEADER
      Classes/AppDelegate.h
      Classes/SettingandCreating/FastCreating.h
      Classes/ChooseScene/HeroChoose.h
-     Classes/ChooseScene/MapChoose.h
+     Classes/ChooseScene/AIChoose.h
      Classes/SettingandCreating/SettingScene.h
      Classes/Start/StartinterfaceScene.h
      Classes/Start/StartScene.h

@@ -79,17 +79,14 @@ void MenuLayer::AddMenu(std::vector<MenuItemFont*> menuList)
 			origin.x + visibleSize.width / 3,
 			origin.y + visibleSize.height * 0.6f - (iterator - menuList.begin()) * 0.85f * (*iterator)->getContentSize().height));
 
-
 }
 
 void MenuLayer::menuItemCallback(cocos2d::Ref* pSender, std::string eventname)
 {
-
+	this->removeFromParentAndCleanup(true);
 	if (eventname == "Main Menu")
 		Director::getInstance()->replaceScene(StartScene::create());
-	if(eventname=="Back To Game")
-		this->removeFromParentAndCleanup(true);
 	if (eventname == "ChooseAgain")
-		Director::getInstance()->replaceScene(HeroChoose::create());
+		Director::getInstance()->getRunningScene()->addChild(HeroChoose::create());
 
 }

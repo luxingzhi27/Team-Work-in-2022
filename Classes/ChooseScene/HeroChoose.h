@@ -7,7 +7,7 @@
 using namespace cocos2d;
 using namespace ui;
 #define HeroNUM 4
-class HeroChoose : public Scene
+class HeroChoose : public Layer
 {
 public:
 	virtual bool init();
@@ -15,6 +15,7 @@ public:
 	CheckBox* HeroBox[HeroNUM];
 	void BoxListenerAdd(int num);
 	int getHeroNum() { return ChHeroNum; };
+	void menuItemCallback(cocos2d::Ref* pSender, std::string eventname);
 private:
 	int ChHeroNum;
 };

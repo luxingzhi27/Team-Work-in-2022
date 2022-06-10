@@ -4,7 +4,7 @@
 #include "editor-support/cocostudio/SimpleAudioEngine.h"
 #include "AudioEngine.h"
 #include "ChooseScene/HeroChoose.h"
-#include "ChooseScene/MapChoose.h"
+#include "ChooseScene/AIChoose.h"
 using namespace cocos2d;
 using namespace ui;
 typedef void (*pFunc)(Ref*, Widget::TouchEventType);

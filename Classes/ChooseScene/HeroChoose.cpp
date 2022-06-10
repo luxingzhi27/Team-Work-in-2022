@@ -1,14 +1,15 @@
 #include "HeroChoose.h"
 #include "SettingandCreating/FastCreating.h"
-#include "MapChoose.h"
+#include "AIChoose.h"
 bool HeroChoose::init()
 {
-	if (!Scene::init())
+	if (!Layer::init())
 		return false;
 
 	auto visibleSize = Director::getInstance()->getVisibleSize();
 	Vec2 origin = Director::getInstance()->getVisibleOrigin();
-
+	auto bg = LayerColor::create(Color4B::GRAY);
+	addChild(bg);
 	Sprite* myHero[5];
 	for (int i = 1; i < 5; i++)
 	{
@@ -20,7 +21,7 @@ bool HeroChoose::init()
 		myHero[i] = Sprite::create(str);
 		myHero[i]->setScale(2.5);
 		myHero[i]->setPosition(visibleSize.width * (i) / 5, visibleSize.height / 1.8);
-		this->addChild(myHero[i], i);
+		this->addChild(myHero[i]);
 	}
 
 	//创建一个提示文本
@@ -91,36 +92,21 @@ bool HeroChoose::init()
 			}
 		});
 
+	auto menuImage = MenuImageCreate();
+	menuImage->setCallback(CC_CALLBACK_1(HeroChoose::menuItemCallback,
+		this,
+		"Return"));
+	auto pMenu = MenuCreate("Return", menuImage,
+		Vec2(visibleSize.width / 4, visibleSize.height / 7));
+	addChild(pMenu);
 
-	//创建一个返回按钮
-	auto ReturnButton = Button_Create("Return", [](Ref* ref, Widget::TouchEventType type)
-		{
-			switch (type) {
-			case Widget::TouchEventType::ENDED:
-				Director::getInstance()->popScene();
-				break;
-			default:
-				break;
-			}
-		});
-	ReturnButton->setScale(0.7);
-	ReturnButton->setPosition(Vec2(origin.x + ReturnButton->getContentSize().width, origin.y + ReturnButton->getContentSize().height/3));
-	addChild(ReturnButton);
-
-	//创建一个next按钮
-	auto NextButton = Button_Create("Next", [](Ref* ref, Widget::TouchEventType type)
-		{
-			switch (type) {
-			case Widget::TouchEventType::ENDED:
-				Director::getInstance()->pushScene(MapChoose::create());
-				break;
-			default:
-				break;
-			}
-		});
-	NextButton->setScale(0.7);
-	NextButton->setPosition(Vec2(visibleSize.width/1.5 + NextButton->getContentSize().width /2, origin.y + NextButton->getContentSize().height / 3));
-	addChild(NextButton);
+	auto menuImage2 = MenuImageCreate();
+	menuImage2->setCallback(CC_CALLBACK_1(HeroChoose::menuItemCallback,
+		this,
+		"Next"));
+	auto pMenu2 = MenuCreate("Next", menuImage2,
+		Vec2(visibleSize.width * 3 / 4, visibleSize.height / 7));
+	addChild(pMenu2);
 
 
 	//创建一个退出按钮
@@ -137,5 +123,14 @@ bool HeroChoose::init()
 	addChild(ExitImage);
 
 	return true;
+}
+
+void HeroChoose::menuItemCallback(cocos2d::Ref* pSender, std::string eventname)
+{
+	this->removeFromParentAndCleanup(true);
+	if (eventname == "Return")
+		Director::getInstance()->replaceScene(StartScene::create());
+	if (eventname == "Next")
+		Director::getInstance()->getRunningScene()->addChild(AIChoose::create());
 }
 

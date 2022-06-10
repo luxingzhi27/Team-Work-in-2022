@@ -455,11 +455,7 @@ Hero* MapLayer::chooseHero(int choose,Hero* _hero)
 
 Scene* MapLayer::createMapScene()
 {
-    //auto VisibleSize = Director::getInstance()->getVisibleSize();
-    //auto tw = LayerColor::create(Color4B::GRAY);
-    //tw->setAnchorPoint(Vec2::ANCHOR_BOTTOM_LEFT);
-    //tw->setContentSize(Size(450, 80));
-    //tw->setPosition(0, VisibleSize.height-80);
+
 
     auto scene = Scene::createWithPhysics();
     auto layer = MapLayer::create();
