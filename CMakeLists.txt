@@ -70,7 +70,6 @@ list(APPEND GAME_SOURCE
      Classes/actor/leon.cpp
      Classes/actor/nita.cpp
      Classes/Map/mymap.cpp
-     Classes/Bar/MyBar.cpp
      Classes/Article/Article.cpp
      Classes/Article/Bullet.cpp
      Classes/Article/Smoke.cpp
@@ -91,7 +90,6 @@ list(APPEND GAME_HEADER
      Classes/actor/leon.h
      Classes/actor/nita.h
      Classes/Map/mymap.h
-     Classes/Bar/MyBar.h
      Classes/const/const.h
      Classes/Article/Article.h
      Classes/Article/Bullet.h

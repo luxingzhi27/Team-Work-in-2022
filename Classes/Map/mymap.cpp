@@ -34,7 +34,7 @@ bool MapLayer::init()
     m_map->setPosition(Vec2(0, 0));
     this->addChild(m_map);
 
-    int playerHeroType = HeroNum;           //选择英雄种类
+    int playerHeroType = 3;           //选择英雄种类
 
     m_hero=chooseHero(playerHeroType,m_hero);
     m_hero->init();

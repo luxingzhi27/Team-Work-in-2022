@@ -24,7 +24,7 @@ bool Hero::init()
 		return false;
 	ProgressTimer* progressBlood=ProgressCreate(BloodTag, "BloodBar.png", Vec2(15, 75));
 	this->addChild(progressBlood);
-	this->schedule(CC_SCHEDULE_SELECTOR(Hero::BarUpdate), 0.5f);
+	this->schedule(CC_SCHEDULE_SELECTOR(Hero::BarUpdate));
 	ProgressTimer* progressBlue = ProgressCreate(BlueTag, "BlueBar.png", Vec2(15, 65));
 	this->addChild(progressBlue);
 
@@ -309,15 +309,29 @@ void Hero::grassInvisible()
 	auto grassLayer = _map->getLayer("grass");
 	auto pos = Vec2toTile(getPosition());
 	int gid = grassLayer->getTileGIDAt(pos);
+	auto progressBlood = (ProgressTimer*)this->getChildByTag(BloodTag);
+	auto progressBlue = (ProgressTimer*)this->getChildByTag(BlueTag);
 	if (gid)
 	{
 		if (isai == false)
+		{
+			progressBlood->setOpacity(128);
+			progressBlue->setOpacity(128);
 			setOpacity(128);
+		}
 		else
+		{
+			progressBlood->setOpacity(1);
+			progressBlue->setOpacity(1);
 			setOpacity(1);
+		}
 	}
 	else
+	{
+		progressBlood->setOpacity(255);
+		progressBlue->setOpacity(255);
 		setOpacity(255);
+	}
 }
 
 Vec2 Hero::aiSearch(int &aimtype)
@@ -334,7 +348,7 @@ Vec2 Hero::aiSearch(int &aimtype)
 		{
 			auto pos = i->getPosition();
 			auto distance = pow(aipos.x - pos.x, 2) + pow(aipos.y - pos.y, 2);
-			if (distance < 10000)
+			if (distance < 40000)
 			{
 				if (i->getTag() == TREASURE_TAG)
 					treasure.push_back(i);
@@ -379,22 +393,25 @@ void Hero::aiMove()
 	auto pos = getPosition();
 	if ( aim!= Vec2(5000,5000))
 	{
-		int offset=60;
-		if (aimtype == DIAMOND_TAG)
-			offset = -3;
-		else
+		if(aimtype != DIAMOND_TAG)
 		{
 			specialAttack(aim);
-			attack(aim);
+			attack(aim+Vec2(-1.5,-1.5));
 		}
-		if (aim.x+offset < pos.x)
-			choose = 3;
-		else if (aim.y+offset < pos.y)
-			choose = 2;
-		else if (aim.x-offset > pos.x)
-			choose = 4;
-		else if (aim.y+offset > pos.y)
-			choose = 1;
+
+		if ((aimtype == DIAMOND_TAG && pow(pos.x - aim.x, 2) + pow(pos.y - aim.y, 2) < 9) || (aimtype != DIAMOND_TAG && pow(pos.x - aim.x, 2) + pow(pos.y - aim.y, 2) < 8000))
+			choose = 0;
+		else
+		{
+			if (!((pos.x-aim.x)<4))
+				choose = 3;
+			else if (!((pos.y-aim.y)<4))
+				choose = 2;
+			else if (!((aim.x - pos.x) < 4))
+				choose = 4;
+			else if (!((aim.y - pos.y) < 4))
+				choose = 1;
+		}
 	}
 	else
 	{
@@ -532,9 +549,9 @@ void Hero::createDiamond()
 {
 	auto dia = Diamond::create("diamond.png");
 	getParent()->addChild(dia);
-	dia->setPosition(getPosition());
+	dia->setPosition(getPosition()+ Vec2(random(-10, 10), random(-10, 10)));
 	log("treasure position:(%f,%f)", this->getPosition().x, this->getPosition().y);
-	dia->runAction(MoveTo::create(0.01, getPosition() + getParent()->getPosition()+Vec2(random(-25,25), random(-25, 25))));
+	//dia->runAction(MoveTo::create(0.01, getPosition() + getParent()->getPosition()+Vec2(random(-25,25), random(-25, 25))));
 	//加随机数避免宝石位置重叠
 	dia->run_action();
 	log("dia position:(%f,%f)", dia->getPosition().x, dia->getPosition().y);
