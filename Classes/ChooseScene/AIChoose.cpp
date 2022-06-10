@@ -1,6 +1,7 @@
 #include "AIChoose.h"
 #include "SettingandCreating/FastCreating.h"
 #include"Map/mymap.h"
+#include"global.h"
 bool AIChoose::init()
 {
 	if (!Layer::init())
@@ -25,20 +26,20 @@ bool AIChoose::init()
 	label2->setScaleX(1.35f);
 	label2->enableShadow();
 	this->addChild(label2);
-	NumOfAI = 1;
-	auto path = StringUtils::format("%d/%d", NumOfAI, MAX_AI_NUM);
+	NumOfAi = 1;
+	auto path = StringUtils::format("%d/%d", NumOfAi, MAX_AI_NUM);
 	label2->setString(path);
 	auto slider = Slider::create();
 	slider->loadBarTexture("Slider_Back.png"); // what the slider looks like
 	slider->loadSlidBallTextures("SliderNode_Normal.png", "SliderNode_Press.png", "SliderNode_Disable.png");
 	slider->loadProgressBarTexture("Slider_PressBar.png");
 	slider->setScale(1.2, 1.4);
-	slider->setPercent(NumOfAI * 100 / MAX_AI_NUM );
+	slider->setPercent(NumOfAi * 100 / MAX_AI_NUM );
 	slider->addEventListener([&](Ref* sender, Slider::EventType type) {
 		if (type == Slider::EventType::ON_PERCENTAGE_CHANGED) {
 			int percent = dynamic_cast<Slider*>(sender)->getPercent();
-			NumOfAI = percent * MAX_AI_NUM / 100;
-			auto path = StringUtils::format("%d/%d", NumOfAI, MAX_AI_NUM);
+			NumOfAi = percent * MAX_AI_NUM / 100;
+			auto path = StringUtils::format("%d/%d", NumOfAi, MAX_AI_NUM);
 			label2->setString(path);
 		}
 		});
@@ -82,8 +83,6 @@ bool AIChoose::init()
 	auto pMenu3 = MenuCreate("Next", menuImage3,
 		Vec2(visibleSize.width * 3 / 4, visibleSize.height / 7));
 	addChild(pMenu3);
-
-
 	return true;
 }
 

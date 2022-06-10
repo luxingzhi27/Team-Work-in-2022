@@ -1,6 +1,7 @@
 #include "HeroChoose.h"
 #include "SettingandCreating/FastCreating.h"
 #include "AIChoose.h"
+#include"global.h"
 bool HeroChoose::init()
 {
 	if (!Layer::init())
@@ -42,7 +43,7 @@ bool HeroChoose::init()
 		HeroBox[i]->setAnchorPoint(Vec2::ANCHOR_MIDDLE);
 		HeroBox[i]->setPosition(Vec2(visibleSize.width * (i + 1) / (HeroNUM+1),visibleSize.height/3));
 	}
-	HeroBox[HeroNum]->setSelected(true);
+	HeroBox[NumOfHero]->setSelected(true);
 	HeroBox[0]->addEventListener([&](Ref* ref, ui::CheckBox::EventType type)
 		{
 			if (type == CheckBox::EventType::SELECTED)
@@ -52,7 +53,8 @@ bool HeroChoose::init()
 					if (HeroBox[m]->isSelected() && m != 0)
 						HeroBox[m]->setSelected(false);
 				}
-				ChHeroNum = 0;
+				//ChHeroNum = 0;
+				NumOfHero = 0;
 			}
 		});
 	HeroBox[1]->addEventListener([&](Ref* ref, ui::CheckBox::EventType type)
@@ -65,6 +67,7 @@ bool HeroChoose::init()
 						HeroBox[m]->setSelected(false);
 				}
 				ChHeroNum = 1;
+				NumOfHero = 1;
 			}
 		});
 	HeroBox[2]->addEventListener([&](Ref* ref, ui::CheckBox::EventType type)
@@ -77,6 +80,7 @@ bool HeroChoose::init()
 						HeroBox[m]->setSelected(false);
 				}
 				ChHeroNum = 2;
+				NumOfHero = 2;
 			}
 		});
 	HeroBox[3]->addEventListener([&](Ref* ref, ui::CheckBox::EventType type)
@@ -89,6 +93,7 @@ bool HeroChoose::init()
 						HeroBox[m]->setSelected(false);
 				}
 				ChHeroNum = 3;
+				NumOfHero = 3;
 			}
 		});
 
@@ -127,10 +132,13 @@ bool HeroChoose::init()
 
 void HeroChoose::menuItemCallback(cocos2d::Ref* pSender, std::string eventname)
 {
+	auto layer = AIChoose::create();
 	this->removeFromParentAndCleanup(true);
 	if (eventname == "Return")
 		Director::getInstance()->replaceScene(StartScene::create());
 	if (eventname == "Next")
-		Director::getInstance()->getRunningScene()->addChild(AIChoose::create());
+	{
+		Director::getInstance()->getRunningScene()->addChild(layer);
+	}
 }
 

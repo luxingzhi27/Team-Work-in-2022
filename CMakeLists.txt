@@ -74,6 +74,7 @@ list(APPEND GAME_SOURCE
      Classes/Article/Bullet.cpp
      Classes/Article/Smoke.cpp
      Classes/MenuLayer/MenuLayer.cpp
+     Classes/global.cpp
      )
 list(APPEND GAME_HEADER
      Classes/AppDelegate.h
@@ -95,6 +96,7 @@ list(APPEND GAME_HEADER
      Classes/Article/Bullet.h
      Classes/Article/Smoke.h
      Classes/MenuLayer/MenuLayer.h
+     Classes/global.h
      )
 
 if(ANDROID)

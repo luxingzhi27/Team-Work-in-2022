@@ -12,8 +12,8 @@ public:
 	virtual bool init();
 	CREATE_FUNC(AIChoose);
 	void menuItemCallback(cocos2d::Ref* pSender, std::string eventname);
+	int _hero;
 private:
-	int NumOfAI;
 	Label* label2;
 };
 

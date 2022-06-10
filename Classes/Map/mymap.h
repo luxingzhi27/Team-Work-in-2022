@@ -43,9 +43,9 @@ private:
     std::vector<Smoke*> smoke_vec;
     int smoke_range = 8;
     int smoke_index = 0;
-   Label* label;
-   Label* label2;
-   int Num;
+    Label* label;
+    Label* label2;
+    int Num;
 };
 
 #endif 

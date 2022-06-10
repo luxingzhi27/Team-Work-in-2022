@@ -1,9 +1,10 @@
 #include "mymap.h"
-#include"SettingandCreating/FastCreating.h"
 #include<cstdlib>
 #include<ctime>
 #include<vector>
 #include<algorithm>
+#include"ChooseScene\AIchoose.h"
+#include"global.h"
 
 USING_NS_CC;
 
@@ -34,7 +35,7 @@ bool MapLayer::init()
     m_map->setPosition(Vec2(0, 0));
     this->addChild(m_map);
 
-    int playerHeroType = 3;           //选择英雄种类
+    int playerHeroType = NumOfHero;           //选择英雄种类
 
     m_hero=chooseHero(playerHeroType,m_hero);
     m_hero->init();
@@ -46,7 +47,7 @@ bool MapLayer::init()
     label->setPosition(Vec2(BlueBar->getPosition())+Vec2(400,0));
     label->setScaleX(1.35f);
     label->enableShadow();
-    int aiNum = 9;                         //选择ai数量
+    int aiNum = NumOfAi;                         //选择ai数量
     for (int i = 0; i <aiNum ; i++)
     {
         auto aiHeroType = rand() % 4;
@@ -459,9 +460,7 @@ Scene* MapLayer::createMapScene()
 
     auto scene = Scene::createWithPhysics();
     auto layer = MapLayer::create();
-
     scene->addChild(layer);
-    //scene->addChild(tw);
     scene->addChild(layer->label);
     scene->addChild(layer->label2);
     scene->addChild(layer->BloodBar);
