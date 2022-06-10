@@ -156,7 +156,7 @@ void MapLayer::update(float dlt)
         if (i->getTag() == HERO_TAG)
             cnt++;
     }
-    if (m_hero!=nullptr)
+    if (isalive)
     {
         ATKNum = m_hero->getATK();
         auto ATK = StringUtils::format("ATK:%d", ATKNum);
@@ -185,11 +185,11 @@ void MapLayer::update(float dlt)
         auto viewPoint = centerView - actualPos;
         this->setPosition(viewPoint);
     }
-    if (m_hero != nullptr && cnt == 1)
+    if (isalive && cnt == 1)
     {
         Director::getInstance()->replaceScene(EndScene::createScene(true));
     }
-    else if (m_hero == nullptr)
+    else if (!isalive)
     {
         Director::getInstance()->replaceScene(EndScene::createScene(false));
     }
@@ -505,4 +505,9 @@ void MapLayer::ButtonEvent(cocos2d::Ref* pSender, Scene* scene)
     //Director::getInstance()->stopAnimation();
     auto layer = MenuLayer::create();
     scene->addChild(layer);
+}
+
+void MapLayer::setalive(bool isAlive)
+{
+    isalive = isAlive;
 }

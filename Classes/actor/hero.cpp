@@ -1,4 +1,5 @@
 #include "hero.h"
+#include"Map/mymap.h"
 USING_NS_CC;
 #include<vector>
 #include<cmath>
@@ -541,6 +542,11 @@ void Hero::die()
 	for (int i = 0; i < diamondNum; i++)
 	{
 		this->createDiamond();
+	}
+	if (!isai)
+	{
+		auto parent = dynamic_cast<MapLayer*>(getParent());
+		parent->setalive(_isAlive);
 	}
 	this->removeFromParentAndCleanup(true);
 }

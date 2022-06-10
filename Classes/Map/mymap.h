@@ -32,6 +32,7 @@ public:
     void ConEve_Hero_Spell(Hero* hero, Bullet* spell);
     Hero* chooseHero(int choose,Hero* _hero);                      //选择英雄的函数
     void ButtonEvent(cocos2d::Ref* pSender, Scene* scene);
+    void setalive(bool isAlive);
 private:
     LoadingBar* BloodBar;
     LoadingBar* BlueBar;
@@ -48,6 +49,7 @@ private:
     Label* label3;//显示剩余普工数
     int ATKNum;
     int BULLETNum;
+    bool isalive = true;
 };
 
 #endif 
