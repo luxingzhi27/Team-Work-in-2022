@@ -335,6 +335,7 @@ void Hero::grassInvisible()
 	auto progressBlue = (ProgressTimer*)this->getChildByTag(BlueTag);
 	if (gid)
 	{
+		_isInGrass = true;
 		if (isai == false)
 		{
 			progressBlood->setOpacity(128);
@@ -350,6 +351,7 @@ void Hero::grassInvisible()
 	}
 	else
 	{
+		_isInGrass = false;
 		progressBlood->setOpacity(255);
 		progressBlue->setOpacity(255);
 		setOpacity(255);
@@ -360,7 +362,7 @@ Vec2 Hero::aiSearch(int &aimtype)
 {
 	auto children=getParent()->getChildren();
 	vector<Node*> treasure;
-	vector<Node*> hero;
+	vector<Hero*> hero;
 	vector<Node*> diamond;
 
 	auto aipos = getPosition();
@@ -375,13 +377,13 @@ Vec2 Hero::aiSearch(int &aimtype)
 				if (i->getTag() == TREASURE_TAG)
 					treasure.push_back(i);
 				if (i->getTag() == HERO_TAG)
-					hero.push_back(i);
+					hero.push_back(dynamic_cast<Hero*>(i));
 				if (i->getTag() == DIAMOND_TAG)
 					diamond.push_back(i);
 			}
 		}
 	}
-	if (!hero.empty())
+	if (!hero.empty()&& !hero[0]->isInGrass())
 	{
 	//	log("hero!");
 		aimtype = HERO_TAG;
@@ -417,8 +419,12 @@ void Hero::aiMove()
 	{
 		if(aimtype != DIAMOND_TAG)
 		{
-			specialAttack(aim+getParent()->getPosition()+Vec2(random(-5,5), random(-5, 5)));
-			attack(aim + getParent()->getPosition() +Vec2(-1.5,-1.5)+Vec2(random(-5, 5), random(-5, 5)));
+			int r = random(0,39);
+			if (!r)
+			{
+				specialAttack(aim + getParent()->getPosition() + Vec2(random(-55, 55), random(-55, 55)));
+				attack(aim + getParent()->getPosition() + Vec2(-1.5, -1.5) + Vec2(random(-15, 15), random(-15, 15)));
+			}
 		}
 
 		if ((aimtype == DIAMOND_TAG && pow(pos.x - aim.x, 2) + pow(pos.y - aim.y, 2) < 9) || (aimtype != DIAMOND_TAG && pow(pos.x - aim.x, 2) + pow(pos.y - aim.y, 2) < 8000))
@@ -598,7 +604,12 @@ void Hero::outofFighting(float dlt)
 		log("fighting- ,now:%d ", _isfighting);
 }
 
-int Hero::getBulletNum()
+int Hero::getBulletNum()const
 {
 	return bulletNum;
+}
+
+bool Hero::isInGrass() const
+{
+	return _isInGrass;
 }

@@ -98,7 +98,9 @@ public:
 
     void outofFighting(float dlt);//ÍÑÕ½
 
-    int getBulletNum();
+    int getBulletNum()const;
+
+    bool isInGrass()const;
 
     CREATE_FUNC(Hero);
 
@@ -135,6 +137,7 @@ protected:
     bool isFirst = true;
     int _isPoisoning = 0;                 //ÖÐ¶¾×´Ì¬
     int _isfighting = 0;             //ÍÑÕ½×´Ì¬
+    bool _isInGrass = false;
 public:
     std::map<cocos2d::EventKeyboard::KeyCode, bool>  keys;
 };

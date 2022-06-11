@@ -14,8 +14,6 @@
 #define AmplificationRate  0.2
 
 //hero
-//#define LEVEL_UP_ATK 400
-//#define LEVEL_UP_HP 2000
 #define MAX_BULLET_NUM 6
 #define MAX_ENERGY 4
 #define HERO_CONTACT_MASK 1
@@ -30,7 +28,7 @@ enum class HeroTowards { front, back, right, left };
 #define SHIRLEY_SPEED 1.1
 #define SHIRLEY_MAX_ENERGY 8
 
-#define SHIRLEY_SPELL_RATE 2.5
+#define SHIRLEY_SPELL_RATE 3
 #define SHIRLEY_SPELL_REACH 400
 #define SHIRLEY_SPELL_SPEED 1.3
 
@@ -42,7 +40,7 @@ enum class HeroTowards { front, back, right, left };
 #define COLT_SPEED 1.0
 #define COLT_MAX_ENERGY 6
 
-#define COLT_SPELL_RATE 1.5
+#define COLT_SPELL_RATE 3.5
 #define COLT_SPELL_REACH 500
 #define COLT_SPELL_SPEED 0.9
 
@@ -53,7 +51,7 @@ enum class HeroTowards { front, back, right, left };
 #define LEON_SPEED 1.2
 #define LEON_MAX_ENERGY 10
 
-#define LEON_SPELL_RATE 2
+#define LEON_SPELL_RATE 4
 #define LEON_SPELL_REACH 1000
 #define LEON_SPELL_SPEED 1.4
 
@@ -64,7 +62,7 @@ enum class HeroTowards { front, back, right, left };
 #define NITA_SPEED 1.0
 #define NITA_MAX_ENERGY 6
 
-#define NITA_SPELL_RATE 1.5
+#define NITA_SPELL_RATE 3
 #define NITA_SPELL_REACH 300
 #define NITA_SPELL_SPEED 1.2
 
