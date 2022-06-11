@@ -111,3 +111,11 @@ ProgressTimer* ProgressCreate(int Tag,std::string filename, Vec2 position)
 	progress->setTag(Tag);          //做一个标记
 	return progress;
 }
+Label* LabelCreate(std::string Text) {
+	auto label = Label::createWithTTF(Text, "fonts/Marker Felt.ttf", 40);
+	label->setTextColor(Color4B::ORANGE);
+	label->setAnchorPoint(Vec2::ANCHOR_MIDDLE);
+	label->setScaleX(1.35f);
+	label->enableShadow();
+	return label;
+}

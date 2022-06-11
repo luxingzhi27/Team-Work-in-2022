@@ -19,4 +19,5 @@ LoadingBar* BarCreate(Vec2 position, std::string filename);
 MenuItemImage* MenuImageCreate();
 Menu* MenuCreate(std::string filename, MenuItemImage* menuImage, Vec2 position);
 ProgressTimer* ProgressCreate(int Tag, std::string filename, Vec2 position);
+Label* LabelCreate(std::string Text);
 #endif 

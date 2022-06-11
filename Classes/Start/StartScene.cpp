@@ -49,7 +49,7 @@ bool StartScene::init()
 		{
 			switch (type) {
 			case Widget::TouchEventType::ENDED:
-				//Director::getInstance()->pushScene(SettingScene::createScene());
+				Director::getInstance()->getRunningScene()->addChild(HelpLayer::create());
 				break;
 			default:
 				break;

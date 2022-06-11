@@ -1,8 +1,5 @@
 #include "EndScene/EndScene.h"
 
-
-
-
 cocos2d::Scene* EndScene::createScene(bool isVictory)
 {
 	auto visibleSize = Director::getInstance()->getVisibleSize();

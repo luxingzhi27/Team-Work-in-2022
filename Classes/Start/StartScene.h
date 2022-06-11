@@ -7,6 +7,7 @@
 #include "SettingandCreating/SettingScene.h" 
 #include "SettingandCreating/FastCreating.h"
 #include "ChooseScene/HeroChoose.h"
+#include "HelpLayer/HelpLayer.h"
 using namespace cocos2d;
 using namespace ui;
 typedef void (*pFunc)(Ref*, Widget::TouchEventType);

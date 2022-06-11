@@ -76,6 +76,7 @@ list(APPEND GAME_SOURCE
      Classes/MenuLayer/MenuLayer.cpp
      Classes/global.cpp
      Classes/EndScene/EndScene.cpp
+     Classes/HelpLayer/HelpLayer.cpp
      )
 list(APPEND GAME_HEADER
      Classes/AppDelegate.h
@@ -99,6 +100,7 @@ list(APPEND GAME_HEADER
      Classes/MenuLayer/MenuLayer.h
      Classes/global.h
      Classes/EndScene/EndScene.h
+     Classes/HelpLayer/HelpLayer.h
      )
 
 if(ANDROID)
