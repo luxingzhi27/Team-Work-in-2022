@@ -7,10 +7,10 @@ Bullet::~Bullet()
 {
 }
 
-Bullet* Bullet::create(const char* filename)
+Bullet* Bullet::create(const char* filename,int tag)
 {
 	Bullet* bullet = new Bullet();
-	if (bullet && bullet->initWithFile(filename)&&bullet->init())
+	if (bullet && bullet->initWithFile(filename)&&bullet->init(tag))
 	{
 		bullet->autorelease();
 		return bullet;
@@ -19,11 +19,11 @@ Bullet* Bullet::create(const char* filename)
 	return nullptr;
 }
 
-bool Bullet::init()
+bool Bullet::init(int tag)
 {
 	
-	setTag(BULLET_TAG);
-	bindPhysicsbody();
+	setTag(tag);
+	bindPhysicsbody(tag);
 	return true;
 	this->scheduleUpdate();
 }
@@ -88,7 +88,7 @@ void Bullet::fillenergy()
 	
 }
 
-void Bullet::bindPhysicsbody()
+void Bullet::bindPhysicsbody(int tag)
 {
 	auto physicsBody = cocos2d::PhysicsBody::createBox(this->getContentSize(), PhysicsMaterial(0.0f, 1.0f, 0.0f));
 	physicsBody->setDynamic(false);
@@ -96,7 +96,7 @@ void Bullet::bindPhysicsbody()
 	physicsBody->setRotationEnable(false);
 	physicsBody->setContactTestBitmask(BULLET_CONTACT_MASK);
 	physicsBody->setCategoryBitmask(BULLET_CATEGORY_MASK);
-	physicsBody->setTag(BULLET_TAG);
+	physicsBody->setTag(tag);
 	this->addComponent(physicsBody);
 }
 
@@ -117,4 +117,9 @@ void Bullet::update(float dlt)
 		}
 	}
 	
+}
+
+Hero* Bullet::getHero() const
+{
+	return _hero;
 }

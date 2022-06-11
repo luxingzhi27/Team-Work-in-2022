@@ -16,8 +16,6 @@ public:
 
     static Shirley* create(const char* file);
 
-    bool bindPhysicsBody();
-
     //¹¥»÷·½Ê½
     virtual void attack(Vec2 target);
 

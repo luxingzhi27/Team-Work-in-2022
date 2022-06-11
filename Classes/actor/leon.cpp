@@ -19,14 +19,14 @@ bool Leon::init()
 	//this->scheduleUpdate();
 
 	//加载HP和ATK
-	setHP(SHIRLEY_HP);
-	InitHP = SHIRLEY_HP;
-	MaxCurrentHP = SHIRLEY_HP;
-	setATK(SHIRLEY_ATK);
-	InitATK = SHIRLEY_ATK;
-	setReach(SHIRLEY_REACH);
+	setHP(LEON_HP);
+	InitHP = LEON_HP;
+	MaxCurrentHP = LEON_HP;
+	setATK(LEON_ATK);
+	InitATK = LEON_ATK;
+	setReach(LEON_REACH);
 	setSpeed(NORMAL_SPEED);
-	Max_energy = SHIRLEY_MAX_ENERGY;
+	Max_energy = LEON_MAX_ENERGY;
 	setTag(HERO_TAG);
 	//加载四个方向行走动画
 	m_front = People::getAnimate("front", "hero4", 4, -1);
@@ -40,10 +40,9 @@ bool Leon::init()
 	m_idle_left = People::getAnimate("left", "hero4", 1, -1);
 	m_idle_right = People::getAnimate("right", "hero4", 1, -1);
 
-	bindBullet("bullet1.png");
-	bindSpell("blask1.png");
+	bindBullet("bullet3.png");
+	bindSpell("blask3.png");
 
-	bindPhysicsBody();
 	if (isai == false)
 	{
 		auto MouseListener = EventListenerMouse::create();
@@ -67,21 +66,6 @@ Leon* Leon::create(const char* file)
 	return nullptr;
 }
 
-bool Leon::bindPhysicsBody()
-{
-	auto _physicsBody = cocos2d::PhysicsBody::createBox(Size(10, 40), PhysicsMaterial(0.0f, 1.0f, 0.0f));
-	_physicsBody->setDynamic(false);
-	_physicsBody->setGravityEnable(false);
-	_physicsBody->setRotationEnable(false);
-	_physicsBody->setContactTestBitmask(HERO_CONTACT_MASK);
-	_physicsBody->setCategoryBitmask(HERO_CATEGORY_MASK);
-	_physicsBody->setTag(HERO_TAG);
-	this->setPhysicsBody(_physicsBody);
-	/*Director::getInstance()->getRunningScene()->getPhysics3DWorld()->setDebugDrawEnable(false);
-	Director::getInstance()->getRunningScene()->setPhysics3DDebugCamera(nullptr);*/
-	return true;
-
-}
 
 void Leon::attack(Vec2 target)
 {
@@ -92,7 +76,7 @@ void Leon::attack(Vec2 target)
 	{
 		_bullet = Bullet::create(BulletType);
 		_bullet->bindHero(static_cast<Hero*>(this));
-		log("Bullet Created");
+//		log("Bullet Created");
 		_bullet->setAttributes(_ATK, _Reach, _Speed);
 
 		auto begin = this->getPosition() + this->getParent()->getPosition();
@@ -102,7 +86,7 @@ void Leon::attack(Vec2 target)
 		auto Angle = route.angle(Vec2(1, 0), route);
 		Angle = -Angle / 3.14159 * 180;
 		_bullet->setRotation(route.y > 0 ? Angle : -Angle);
-		_bullet->setPosition(this->getPosition() + route / _Reach * 75);
+		_bullet->setPosition(this->getPosition() );
 
 		this->getParent()->addChild(_bullet);
 		auto move = MoveBy::create(_bullet->getSpeed(), route);
@@ -111,7 +95,7 @@ void Leon::attack(Vec2 target)
 		_bullet->runAction(Sequence::create(move, selfRemove, nullptr));
 		//每一次攻击都会使子弹数量减少
 		bulletNum--;
-		log("bulletNum:%d", bulletNum);
+//		log("bulletNum:%d", bulletNum);
 		//更改子弹数量
 	}
 }
@@ -147,7 +131,7 @@ void Leon::specialAttack(Vec2 target)
 		_spell = Bullet::create(SpellType);
 		_spell->setTag(SPELL_TAG);
 		_spell->setAnchorPoint(Vec2(0, 0.5));
-		_spell->setAttributes(_ATK * SHIRLEY_SPELL_RATE, SHIRLEY_SPELL_REACH, SHIRLEY_SPELL_SPEED);
+		_spell->setAttributes(_ATK * LEON_SPELL_RATE, LEON_SPELL_REACH, LEON_SPELL_SPEED);
 
 		auto begin = this->getPosition() + this->getParent()->getPosition();
 		auto route = target - begin;
@@ -157,7 +141,7 @@ void Leon::specialAttack(Vec2 target)
 		Angle = -Angle / 3.14159 * 180;
 		_spell->setRotation(route.y > 0 ? Angle : -Angle);
 
-		_spell->setPosition(this->getPosition() + route / _spell->getReach() * 75);
+		_spell->setPosition(this->getPosition());
 		this->getParent()->addChild(_spell);
 		auto move = MoveBy::create(_spell->getSpeed(), route);
 

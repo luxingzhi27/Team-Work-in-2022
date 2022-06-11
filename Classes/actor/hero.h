@@ -23,6 +23,8 @@ public:
 
     static Hero* create(const char* file);
 
+    bool bindPhysicsBody();
+
     //Ìî³ä×Óµ¯
     void fillBullet(float dt);
 

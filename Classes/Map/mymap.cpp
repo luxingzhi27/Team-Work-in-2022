@@ -133,6 +133,7 @@ bool MapLayer::init()
     //×¢²áÅö×²¼àÌýÆ÷
     auto contactListener = EventListenerPhysicsContact::create();
     contactListener->onContactBegin = CC_CALLBACK_1(MapLayer::onContactBegin, this);
+    contactListener->onContactSeparate = CC_CALLBACK_1(MapLayer::onContactSeparate, this);
     _eventDispatcher->addEventListenerWithSceneGraphPriority(contactListener, this);
 
  
@@ -158,11 +159,11 @@ void MapLayer::update(float dlt)
     }
     if (isalive)
     {
-        ATKNum = m_hero->getATK();
+        ATKNum = m_hero->getATK()*2;
         auto ATK = StringUtils::format("ATK:%d", ATKNum);
         label2->setString(ATK);
 
-        BULLETNum = m_hero->getBulletNum();
+        BULLETNum = m_hero->getBulletNum()/2;
         auto BULLET = StringUtils::format("BULLET:%d", BULLETNum);
         label3->setString(BULLET);
 
@@ -346,6 +347,8 @@ void MapLayer::ConEve_Hero_Bullet(Hero* hero,Bullet* bullet)
         log("enermy get hurt");
     else
         log("hero get hurt");
+    if (hero == bullet->getHero())
+        return;
     bullet->fillenergy();
     hero->getHurt(bullet->getATK());
     bullet->onHit();
@@ -433,10 +436,20 @@ void MapLayer::createSmoke(float dlt)
 
 void MapLayer::ConEve_Hero_Spell(Hero* hero, Bullet* spell)
 {
-    if(hero->isAI())
+   
+    if (hero == spell->getHero())
+    {
+        log("this hero");
+        return;
+    }
+    else
+        log("other hero");
+
+    if (hero->isAI())
         log("enermy get spell hurt");
     else
         log("hero get spell hurt");
+        
     hero->getHurt(spell->getATK());
     spell->onHit();
 }
@@ -496,6 +509,7 @@ Scene* MapLayer::createMapScene()
     auto pMenu = MenuCreate("Menu", menuImage,
         Vec2(visibleSize.width - 90, visibleSize.height - 45));
     scene->addChild(pMenu);
+    // scene->getPhysicsWorld()->setDebugDrawMask(PhysicsWorld::DEBUGDRAW_ALL);
     return scene;
 }
 

@@ -14,8 +14,8 @@ class Bullet :public Sprite
 public:
 	Bullet();
 	virtual ~Bullet();
-	static Bullet* create(const char* filename);
-	bool init();
+	static Bullet* create(const char* filename, int tag = BULLET_TAG);
+	bool init(int tag=BULLET_TAG);
 	void setAttributes(int atk,int reach,float speed);
 
 	int getATK()const;
@@ -24,11 +24,11 @@ public:
 	void setType(const char* filename);
 	void onHit();//子弹命中时产生特效
 	void fillenergy();
-	void bindPhysicsbody();
+	void bindPhysicsbody(int tag = BULLET_TAG);
 	void bindHero(Hero* hero);
 
 	void update(float dlt);
-
+	Hero* getHero()const;
 
 	//void update(float dlt);
 	//Vec2 Vec2toTile(Vec2 position);

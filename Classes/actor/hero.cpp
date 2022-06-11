@@ -29,7 +29,7 @@ bool Hero::init()
 	ProgressTimer* progressBlue = ProgressCreate(BlueTag, "BlueBar.png", Vec2(15, 65));
 	this->addChild(progressBlue);
 
-
+	bindPhysicsBody();
 
 	towards = HeroTowards::right;
 	isIdle = true;
@@ -40,8 +40,7 @@ bool Hero::init()
 	this->schedule(CC_SCHEDULE_SELECTOR(Hero::fillBullet), 1.0f);
 
 
-	if(!_isfighting)
-		this->schedule(CC_SCHEDULE_SELECTOR(Hero::fillHP), 1.0f);
+	this->schedule(CC_SCHEDULE_SELECTOR(Hero::fillHP), 1.0f);
 	this->schedule(CC_SCHEDULE_SELECTOR(Hero::outofFighting), 1.0f);
 	this->schedule(SEL_SCHEDULE(&Hero::getPoisoning), 1.0f);
 
@@ -59,7 +58,6 @@ bool Hero::init()
 		// 使用EventDispatcher来处理各种各样的事件，如触摸和其他键盘事件。
 		this->getEventDispatcher()->addEventListenerWithSceneGraphPriority(KeyListener, this);
 	}
-	
 	return true;
 }
 
@@ -75,6 +73,21 @@ Hero* Hero::create(const char* file)
 	CC_SAFE_DELETE(sprite);
 
 	return nullptr;
+}
+
+bool Hero::bindPhysicsBody()
+{
+	auto _physicsBody = cocos2d::PhysicsBody::createCircle(30, PhysicsMaterial(0.0f, 1.0f, 0.0f));//(Size(20, 60), PhysicsMaterial(0.0f, 1.0f, 0.0f));
+	_physicsBody->setDynamic(false);
+	_physicsBody->setGravityEnable(false);
+	_physicsBody->setRotationEnable(false);
+	_physicsBody->setContactTestBitmask(HERO_CONTACT_MASK);
+	_physicsBody->setCategoryBitmask(HERO_CATEGORY_MASK);
+	_physicsBody->setTag(HERO_TAG);
+	this->setPhysicsBody(_physicsBody);
+
+	return true;
+
 }
 
 
@@ -100,9 +113,17 @@ void Hero::fillBullet(float dt)
 }
 void Hero::fillHP(float dt)
 {
-	if (_HP < MaxCurrentHP)
+	if (_isfighting&&!this->isAI())
+		log("be in fighting, %d",_isfighting);
+
+	if (!_isfighting&&_HP < MaxCurrentHP)
 	{
+			
 		_HP += 300;
+		if (!this->isAI())
+		{
+			log("fill hp\ncurrent hp:%d", _HP);
+		}
 		if (_HP > MaxCurrentHP)
 			_HP = MaxCurrentHP;
 		//更改血条
@@ -506,9 +527,11 @@ void Hero::getPoisoning(float dlt)
 	{
 		_isfighting = 5;
 		getHurt(static_cast<int>(MaxCurrentHP * SMOKE_ATK_COEFFICIENT));
-		log("get poisoning");
-		log("current hp:%d", _HP);
-		////////下添加动作
+		if (!this->isAI())
+		{
+			log("get poisoning");
+			log("current hp:%d", _HP);
+		}
 	}
 
 }
@@ -519,6 +542,10 @@ void Hero::setPoisoning(bool flag)
 		_isPoisoning++;
 	else
 		_isPoisoning--;
+	if (!this->isAI())
+	{
+		log("current poisoning num : %d", _isPoisoning);
+	}
 }
 
 
@@ -567,6 +594,8 @@ void Hero::outofFighting(float dlt)
 {
 	if (_isfighting > 0)
 		_isfighting--;
+	if (!this->isAI())
+		log("fighting- ,now:%d ", _isfighting);
 }
 
 int Hero::getBulletNum()

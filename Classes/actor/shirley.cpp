@@ -43,7 +43,6 @@ bool Shirley::init()
 	bindBullet("bullet1.png");
 	bindSpell("blask1.png");
 
-	bindPhysicsBody();
 	if (isai==false)
 	{
 		auto MouseListener = EventListenerMouse::create();
@@ -68,21 +67,6 @@ Shirley* Shirley::create(const char* file)
 	return nullptr;
 }
 
-bool Shirley::bindPhysicsBody()
-{
-	auto _physicsBody = cocos2d::PhysicsBody::createBox(Size(10, 40), PhysicsMaterial(0.0f, 1.0f, 0.0f));
-	_physicsBody->setDynamic(false);
-	_physicsBody->setGravityEnable(false);
-	_physicsBody->setRotationEnable(false);
-	_physicsBody->setContactTestBitmask(HERO_CONTACT_MASK);
-	_physicsBody->setCategoryBitmask(HERO_CATEGORY_MASK);
-	_physicsBody->setTag(HERO_TAG);
-	this->setPhysicsBody(_physicsBody);
-	/*Director::getInstance()->getRunningScene()->getPhysics3DWorld()->setDebugDrawEnable(false);
-	Director::getInstance()->getRunningScene()->setPhysics3DDebugCamera(nullptr);*/
-	return true;
-
-}
 
 void Shirley::attack(Vec2 target)
 {
@@ -93,7 +77,7 @@ void Shirley::attack(Vec2 target)
 	{
 		_bullet = Bullet::create(BulletType);
 		_bullet->bindHero(static_cast<Hero*>(this));
-		log("Bullet Created");
+		//log("Bullet Created");
 		_bullet->setAttributes(_ATK, _Reach, _Speed);
 
 		auto begin = this->getPosition() + this->getParent()->getPosition();
@@ -103,7 +87,7 @@ void Shirley::attack(Vec2 target)
 		auto Angle = route.angle(Vec2(1, 0), route);
 		Angle = -Angle / 3.14159 * 180;
 		_bullet->setRotation(route.y > 0 ? Angle : -Angle);
-		_bullet->setPosition(this->getPosition() + route / _Reach * 75);
+		_bullet->setPosition(this->getPosition() );
 
 		this->getParent()->addChild(_bullet);
 		auto move = MoveBy::create(_bullet->getSpeed(), route);
@@ -112,7 +96,7 @@ void Shirley::attack(Vec2 target)
 		_bullet->runAction(Sequence::create(move, selfRemove, nullptr));
 		//每一次攻击都会使子弹数量减少
 		bulletNum--;
-		log("bulletNum:%d", bulletNum);
+		//log("bulletNum:%d", bulletNum);
 		//更改子弹数量
 	}
 }
@@ -145,11 +129,10 @@ void Shirley::specialAttack(Vec2 target)
 		energy = 0;
 		log("special attack");
 
-		_spell = Bullet::create(SpellType);
-		_spell->setTag(SPELL_TAG);
+		_spell = Bullet::create(SpellType, SPELL_TAG);
 		_spell->setAnchorPoint(Vec2(0, 0.5));
 		_spell->setAttributes(_ATK*SHIRLEY_SPELL_RATE, SHIRLEY_SPELL_REACH, SHIRLEY_SPELL_SPEED);
-
+		_spell->bindHero(static_cast<Hero*>(this));
 		auto begin = this->getPosition() + this->getParent()->getPosition();
 		auto route = target - begin;
 		route.normalize();
@@ -158,7 +141,7 @@ void Shirley::specialAttack(Vec2 target)
 		Angle = -Angle / 3.14159 * 180;
 		_spell->setRotation(route.y > 0 ? Angle : -Angle);
 
-		_spell->setPosition(this->getPosition() + route / _spell->getReach() * 75);
+		_spell->setPosition(this->getPosition());
 		this->getParent()->addChild(_spell);
 		auto move = MoveBy::create(_spell->getSpeed(), route);
 
