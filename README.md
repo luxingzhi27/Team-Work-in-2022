@@ -54,11 +54,26 @@ https://github.com/luxingzhi27/Team-Work-in-2022.git
 1、人物移动：通过添加监听器来监听键盘事件，使用map存储键盘是否被按下的信息，实现人物连续移动；
 
 2、障碍物检测：使用tile地图，根据障碍物图层的gid判断是否能够移动，完成障碍物检测；
-
+```cpp
+position = Vec2toTile(position + Vec2(aimx, aimy));
+auto wallgrp = _map->getLayer("barrier");
+int tilegid = wallgrp->getTileGIDAt(position);
+if (tilegid)
+  return;
+```
 3、添加游戏ai：由在人物类中添加数据成员isai来决定是否是ai，并由aiSearch函数索敌，aiMove函数完成ai移动以及射击；
 
 4、选择英雄及ai数量：添加global类，存储需要的全局变量，来实现不同场景间传递信息；
+```cpp
+#pragma once
+#ifndef _GLOABL_H_
+#define _GLOBAL_H
 
+extern int NumOfHero;
+extern int NumOfAi;
+
+#endif // !_GLOABL_H_
+```
 5、英雄属性实时显示：使用label标签，不断调用label->setString();
 
 游戏亮点：
