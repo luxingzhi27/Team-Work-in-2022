@@ -397,7 +397,7 @@ Vec2 Hero::aiSearch(int &aimtype)
 	{
 	//	log("treasure!");
 		aimtype = TREASURE_TAG;
-		return treasure[0]->getPosition();
+		return treasure[0]->getPosition() ;
 	}
 	else
 	{
@@ -417,8 +417,8 @@ void Hero::aiMove()
 	{
 		if(aimtype != DIAMOND_TAG)
 		{
-			specialAttack(aim);
-			attack(aim+Vec2(-1.5,-1.5));
+			specialAttack(aim+getParent()->getPosition()+Vec2(random(-5,5), random(-5, 5)));
+			attack(aim + getParent()->getPosition() +Vec2(-1.5,-1.5)+Vec2(random(-5, 5), random(-5, 5)));
 		}
 
 		if ((aimtype == DIAMOND_TAG && pow(pos.x - aim.x, 2) + pow(pos.y - aim.y, 2) < 9) || (aimtype != DIAMOND_TAG && pow(pos.x - aim.x, 2) + pow(pos.y - aim.y, 2) < 8000))

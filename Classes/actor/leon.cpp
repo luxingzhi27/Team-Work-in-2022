@@ -132,7 +132,7 @@ void Leon::specialAttack(Vec2 target)
 		_spell->setTag(SPELL_TAG);
 		_spell->setAnchorPoint(Vec2(0, 0.5));
 		_spell->setAttributes(_ATK * LEON_SPELL_RATE, LEON_SPELL_REACH, LEON_SPELL_SPEED);
-
+		_spell->bindHero(static_cast<Hero*>(this));
 		auto begin = this->getPosition() + this->getParent()->getPosition();
 		auto route = target - begin;
 		route.normalize();
