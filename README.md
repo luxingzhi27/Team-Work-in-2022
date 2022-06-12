@@ -105,3 +105,10 @@ extern int NumOfAi;
 6、实现脱战回血机制
 
 7、可以通过滑动条选择ai数量与控制音量
+
+项目运行截图：
+--
+![image](https://github.com/luxingzhi27/Team-Work-in-2022/blob/main/images/1.png)
+![image](https://github.com/luxingzhi27/Team-Work-in-2022/blob/main/images/2.png)
+![image](https://github.com/luxingzhi27/Team-Work-in-2022/blob/main/images/3.png)
+![image](https://github.com/luxingzhi27/Team-Work-in-2022/blob/main/images/4.png)
